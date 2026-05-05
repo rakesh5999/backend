@@ -1,14 +1,15 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../auth.context";
 import { login, register, getme, updateProfile, logout } from "../services/auth.api"
 
 export function useAuth() {
 
     const context = useContext(AuthContext)
-    const { user, setuser, loading, setloading } = context
+    const { user, setuser, loading: authLoading, setloading } = context
+    const [loading, setLoading] = useState(false)
 
     const handleLogin = async (username, password) => {
-        setloading(true)
+        setLoading(true)
         try {
             const response = await login(username, password)
             setuser(response.user)
@@ -19,12 +20,12 @@ export function useAuth() {
                 "Invalid username or password"
             throw new Error(message)
         } finally {
-            setloading(false)
+            setLoading(false)
         }
     }
 
     const handleRegister = async (username, email, password) => {
-        setloading(true)
+        setLoading(true)
         try {
             const response = await register(username, email, password)
             setuser(response.user)
@@ -34,7 +35,7 @@ export function useAuth() {
                 "Registration failed. Please try again."
             throw new Error(message)
         } finally {
-            setloading(false)
+            setLoading(false)
         }
     }
 
@@ -60,5 +61,5 @@ export function useAuth() {
 
 
 
-    return { user, loading, handleLogin, handleRegister, handleUpdateProfile, handleLogout }
+    return { user, loading, authLoading, handleLogin, handleRegister, handleUpdateProfile, handleLogout }
 }

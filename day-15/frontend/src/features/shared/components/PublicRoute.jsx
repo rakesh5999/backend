@@ -3,9 +3,9 @@ import { Navigate, Outlet } from 'react-router'
 import { useAuth } from '../../auth/hooks/useAuth'
 
 const PublicRoute = () => {
-    const { user, loading } = useAuth()
+    const { user, authLoading } = useAuth()
 
-    if (loading) {
+    if (authLoading) {
         return <main style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#1d1d1d' }}><h1 style={{color: 'white'}}>Loading...</h1></main>
     }
 

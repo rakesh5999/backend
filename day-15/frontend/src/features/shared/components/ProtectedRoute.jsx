@@ -4,9 +4,9 @@ import { useAuth } from '../../auth/hooks/useAuth'
 import Layout from './Layout'
 
 const ProtectedRoute = () => {
-    const { user, loading } = useAuth()
+    const { user, authLoading } = useAuth()
 
-    if (loading) {
+    if (authLoading) {
         return <main style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'var(--bg-main)' }}><h1 style={{color: 'var(--text-primary)'}}>Loading...</h1></main>
     }
 
