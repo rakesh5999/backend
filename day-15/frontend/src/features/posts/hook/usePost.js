@@ -18,7 +18,7 @@ export const usePost = ()=>{
  const handleCreatePost = async (imageFile,caption)=>{
     setloading(true)
     const data = await createPost(imageFile,caption)
-    setfeed([data.post, ...feed])
+    setfeed([data.post, ...(feed || [])])
     setloading(false)
  }
 
