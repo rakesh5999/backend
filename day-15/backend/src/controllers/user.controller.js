@@ -73,6 +73,12 @@ async function unfollowUserController(req,res){
 
        await followModel.findByIdAndDelete(isFollowing._id)
 
+       // Update user models if the follow was already accepted
+       if (isFollowing.status === 'accepted') {
+           await userModel.findOneAndUpdate({ username: followerUsername }, { $pull: { following: (await userModel.findOne({username: followeeUsername}))._id } })
+           await userModel.findOneAndUpdate({ username: followeeUsername }, { $pull: { followers: (await userModel.findOne({username: followerUsername}))._id } })
+       }
+
        res.status(200).json({
         message:`you have unfollowed ${followeeUsername}`
        })
@@ -101,12 +107,20 @@ if(!respond){
     })
 }
 
+if (req.body.status === "accepted") {
+    const followerUser = await userModel.findOne({ username: follower })
+    const followeeUser = await userModel.findOne({ username: followee })
+
+    if (followerUser && followeeUser) {
+        await userModel.findByIdAndUpdate(followerUser._id, { $addToSet: { following: followeeUser._id } })
+        await userModel.findByIdAndUpdate(followeeUser._id, { $addToSet: { followers: followerUser._id } })
+    }
+}
+
 
  res.status(200).json({
     message:"status updated "
  })
-
-
 
 
 }

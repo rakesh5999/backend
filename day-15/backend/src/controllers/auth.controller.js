@@ -51,7 +51,9 @@ res.status(201).json({
         email:user.email,
         username:user.username,
         bio:user.bio,
-        profileImage:user.profileImage
+        profileImage:user.profileImage,
+        followers:user.followers || [],
+        following:user.following || []
     }
 })
 
@@ -112,7 +114,9 @@ res.status(200).json({
          username:user.username,
          email:user.email,
          bio:user.bio,
-         profileImage:user.profileImage
+         profileImage:user.profileImage,
+         followers:user.followers || [],
+         following:user.following || []
     }
 })
 
@@ -134,7 +138,9 @@ async function getmeController(req,res){
             username:user.username,
             email:user.email,
             bio:user.bio,
-            profileImage:user.profileImage
+            profileImage:user.profileImage,
+            followers:user.followers || [],
+            following:user.following || []
         }
     })
 }
