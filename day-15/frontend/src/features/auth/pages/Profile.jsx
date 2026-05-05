@@ -5,7 +5,7 @@ import Post from '../../posts/components/Post'
 import '../style/profile.scss'
 
 const Profile = () => {
-    const { user, loading: authLoading, handleUpdateProfile } = useAuth()
+    const { user, loading: authLoading, handleUpdateProfile, handleRefreshUser } = useAuth()
     const imageRef = useRef(null)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [selectedPost, setSelectedPost] = useState(null)
@@ -25,9 +25,8 @@ const Profile = () => {
     } = usePost()
 
     useEffect(() => {
-        if (!feed || feed.length === 0) {
-            handleGetFeed()
-        }
+        handleGetFeed()
+        handleRefreshUser()
     }, [])
 
     async function handleSubmit(e) {
@@ -147,28 +146,32 @@ const Profile = () => {
                 </div>
             )}
             {selectedPost && (
-                <div className="post-view-modal">
-                    <div className="post-modal-content">
+                <div className="post-view-modal" onClick={() => setSelectedPost(null)}>
+                    <div className="post-modal-content" onClick={(e) => e.stopPropagation()}>
                         <button className="close-modal" onClick={() => setSelectedPost(null)}>×</button>
-                        <div className="post-wrapper">
-                            <Post 
-                                user={selectedPost.user}
-                                post={selectedPost}
-                                loading={false}
-                                handleLike={handleLike}
-                                handleUnLike={handleUnLike}
-                                handleFollow={() => {}} // Not needed on own profile
-                                handleUnFollow={() => {}} // Not needed on own profile
-                                handleDelete={(id) => {
-                                    handleDelete(id)
-                                    setSelectedPost(null)
-                                }}
-                                comments={comments}
-                                activePost={activePost}
-                                handleToggleComments={handleToggleComments}
-                                handleAddComment={handleAddComment}
-                                handleDeleteComment={handleDeleteComment}
-                            />
+                        <div className="feed-page" style={{padding: 0, width: '100%'}}>
+                            <div className="feed" style={{maxWidth: '100%'}}>
+                                <div className="posts">
+                                    <Post 
+                                        user={selectedPost.user}
+                                        post={selectedPost}
+                                        loading={false}
+                                        handleLike={handleLike}
+                                        handleUnLike={handleUnLike}
+                                        handleFollow={() => {}} 
+                                        handleUnFollow={() => {}} 
+                                        handleDelete={(id) => {
+                                            handleDelete(id)
+                                            setSelectedPost(null)
+                                        }}
+                                        comments={comments}
+                                        activePost={activePost}
+                                        handleToggleComments={handleToggleComments}
+                                        handleAddComment={handleAddComment}
+                                        handleDeleteComment={handleDeleteComment}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
