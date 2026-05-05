@@ -29,13 +29,13 @@ const FollowRequests = () => {
                                 <div className="respond-btns">
                                     <button 
                                         className='accept'
-                                        onClick={() => handleRespond(request.follower, 'accepted')}
+                                        onClick={() => handleRespond(request._id, 'accepted')}
                                     >
                                         Confirm
                                     </button>
                                     <button 
                                         className='reject'
-                                        onClick={() => handleRespond(request.follower, 'rejected')}
+                                        onClick={() => handleRespond(request._id, 'rejected')}
                                     >
                                         Delete
                                     </button>

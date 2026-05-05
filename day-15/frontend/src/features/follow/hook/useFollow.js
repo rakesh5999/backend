@@ -50,8 +50,8 @@ const handleGetRequests = async () => {
 }
 
 
-const handleRespond = async (username, status) =>{
-    await respondToRequest(username,status)
+const handleRespond = async (requestId, status) =>{
+    await respondToRequest(requestId,status)
     await handleGetRequests()
     await handleRefreshUser()
 }

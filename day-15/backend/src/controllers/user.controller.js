@@ -86,39 +86,27 @@ async function unfollowUserController(req,res){
 }
 
 async function respondToFollow(req,res){
-    const followee = (req.user.username || "").trim()
-    const follower = (req.params.username || "").trim()
+    const requestId = req.params.requestId
 
     if(!["accepted", "rejected"].includes(req.body.status)){
         return res.status(400).json({ message: "Invalid status" })
     }
 
-    // Check if it's already in the desired state
-    const existing = await followModel.findOne({
-        follower: { $regex: new RegExp(`^${follower}$`, 'i') },
-        followee: { $regex: new RegExp(`^${followee}$`, 'i') }
-    });
+    const followRecord = await followModel.findById(requestId)
 
-    if (existing && existing.status === req.body.status) {
-         return res.status(200).json({ message: "status already updated" });
+    if(!followRecord){
+        return res.status(404).json({
+            message: "no follow request found"
+        })
     }
 
-    const respond = await followModel.findOneAndUpdate({
-        follower: { $regex: new RegExp(`^${follower}$`, 'i') },
-        followee: { $regex: new RegExp(`^${followee}$`, 'i') }
-    },
-    { status: req.body.status },
-    { new: true }
-)
+    const follower = followRecord.follower
+    const followee = followRecord.followee
 
-if(!respond){
-    return res.status(404).json({
-        message: "no request found"
-    })
-}
+    followRecord.status = req.body.status
+    await followRecord.save()
 
     if (req.body.status === "accepted") {
-        // Find users case-insensitively to get their real IDs
         const followerUser = await userModel.findOne({ username: { $regex: new RegExp(`^${follower}$`, 'i') } })
         const followeeUser = await userModel.findOne({ username: { $regex: new RegExp(`^${followee}$`, 'i') } })
 

@@ -23,7 +23,7 @@ userRouter.post('/follow/:username',authMiddleware ,UserController.followUserCon
 
 userRouter.post('/unfollow/:username',authMiddleware,UserController.unfollowUserController)
 
-userRouter.patch('/follow/:username',authMiddleware,UserController.respondToFollow)
+userRouter.patch('/follow/respond/:requestId',authMiddleware,UserController.respondToFollow)
 
 userRouter.get('/use',authMiddleware,UserController.getAllUsersController)
 

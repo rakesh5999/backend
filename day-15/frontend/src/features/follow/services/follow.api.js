@@ -19,8 +19,8 @@ export async function unFollowUser(username) {
     return response.data
 }
 
-export async function respondToRequest(username, status) {
-    const response = await api.patch("/api/users/follow/" +username,{status})
+export async function respondToRequest(requestId, status) {
+    const response = await api.patch("/api/users/follow/respond/" +requestId,{status})
     return response.data
 }
 
