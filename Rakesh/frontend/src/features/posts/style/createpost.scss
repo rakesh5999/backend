@@ -4,15 +4,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 24px;
     box-sizing: border-box;
 
     .post-form-container {
         width: 100%;
-        max-width: 500px;
+        max-width: 560px;
         background-color: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
+        border: 1px solid var(--border-light);
+        border-radius: 20px;
+        box-shadow: var(--shadow-lg);
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -21,8 +22,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 16px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-light);
 
             .back-button {
                 background: none;
@@ -30,29 +31,43 @@
                 color: var(--text-primary);
                 font-size: 24px;
                 cursor: pointer;
-                padding: 0;
+                padding: 4px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.2s ease;
+                
+                &:hover { background-color: rgba(255, 255, 255, 0.05); }
             }
 
             h1 {
-                font-size: 16px;
+                font-size: 1.1rem;
                 font-weight: 600;
                 margin: 0;
                 flex: 1;
                 text-align: center;
+                color: var(--text-primary);
             }
-            
-            p { display: none; } /* Hide the subtext */
 
             .submit-btn-top {
                 background: none;
                 border: none;
                 color: var(--accent-blue);
                 font-weight: 600;
-                font-size: 14px;
+                font-size: 0.95rem;
                 cursor: pointer;
+                padding: 8px 12px;
+                border-radius: 8px;
+                transition: all 0.2s ease;
 
+                &:hover:not(:disabled) { 
+                    background-color: rgba(59, 130, 246, 0.1);
+                    color: var(--accent-blue-hover); 
+                }
+                
                 &:disabled {
-                    opacity: 0.5;
+                    color: var(--text-secondary);
                     cursor: not-allowed;
                 }
             }
@@ -68,31 +83,37 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                min-height: 300px;
-                padding: 20px;
-                gap: 16px;
+                min-height: 360px;
+                padding: 40px;
+                gap: 20px;
 
                 svg {
-                    width: 60px;
-                    height: 60px;
-                    color: var(--text-primary);
+                    width: 72px;
+                    height: 72px;
+                    color: var(--text-secondary);
                 }
 
                 p {
-                    font-size: 20px;
-                    font-weight: 300;
+                    font-size: 1.25rem;
+                    font-weight: 500;
+                    color: var(--text-primary);
                 }
 
                 .create-post-label {
                     background-color: var(--accent-blue);
                     color: white;
-                    padding: 8px 16px;
-                    border-radius: 8px;
+                    padding: 10px 20px;
+                    border-radius: 10px;
                     font-weight: 600;
-                    font-size: 14px;
+                    font-size: 0.95rem;
                     cursor: pointer;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
 
-                    &:hover { background-color: var(--accent-blue-hover); }
+                    &:hover { 
+                        background-color: var(--accent-blue-hover); 
+                        transform: translateY(-1px);
+                    }
                 }
             }
 
@@ -103,24 +124,24 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                border-bottom: 1px solid var(--border-color);
+                border-bottom: 1px solid var(--border-light);
 
                 .image-preview {
                     width: 100%;
                     height: 100%;
-                    object-fit: contain;
+                    object-fit: cover;
                 }
             }
 
             .input-group {
-                padding: 16px;
+                padding: 20px;
                 
                 input {
                     width: 100%;
                     background: transparent;
                     border: none;
                     color: var(--text-primary);
-                    font-size: 16px;
+                    font-size: 1rem;
                     outline: none;
 
                     &::placeholder { color: var(--text-secondary); }
@@ -128,7 +149,7 @@
             }
 
             .submit-button {
-                display: none; /* Hide bottom submit button, use top one */
+                display: none;
             }
         }
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { useAuth } from '../../auth/hooks/useAuth';
-import './layout.scss';
+import '../layout.scss';
 
 const Sidebar = () => {
     const navigate = useNavigate();

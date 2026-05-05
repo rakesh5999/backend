@@ -17,7 +17,7 @@ const FollowRequests = () => {
                     <h1>Follow Requests</h1>
                 </div>
                 <div className="users-list">
-                    {requests.length === 0 ? (
+                    {!requests || requests.length === 0 ? (
                         <div className="empty-state">No pending requests</div>
                     ) : (
                         requests.map(request => (

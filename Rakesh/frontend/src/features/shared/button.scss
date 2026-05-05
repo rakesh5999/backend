@@ -1,36 +1,57 @@
 .button {
     border: none;
     outline: none;
-    padding-inline: 1rem;
-    padding-block: 0.5rem;
-    border-radius: 8px;
+    padding-inline: 1.2rem;
+    padding-block: 0.65rem;
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    font-size: 0.875rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.9rem;
     font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
  
     &.primary-button {
         background-color: var(--accent-blue);
         color: white;
-        &:hover { background-color: var(--accent-blue-hover); }
+        
+        &:hover:not(:disabled) { 
+            background-color: var(--accent-blue-hover); 
+        }
+        
+        &:active:not(:disabled) {
+            transform: scale(0.96);
+        }
+        
         &:disabled {
-            background-color: #004c8c;
-            color: rgba(255, 255, 255, 0.5);
+            background-color: var(--bg-tertiary);
+            color: var(--text-secondary);
             cursor: not-allowed;
         }
     }
  
     &.secondary-button {
-        background-color: var(--bg-tertiary);
+        background-color: var(--bg-secondary);
         color: var(--text-primary);
-        &:hover { background-color: #363636; }
+        border: 1px solid var(--border-color);
+        
+        &:hover { 
+            background-color: var(--bg-tertiary); 
+            border-color: #475569;
+        }
     }
  
     &.logout-button {
         background-color: transparent;
         color: var(--accent-red);
-        &:hover { color: #ff6b77; }
+        border: 1px solid transparent;
+        
+        &:hover { 
+            background-color: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
     }
- 
-    &:active { transform: scale(0.97); }
 }

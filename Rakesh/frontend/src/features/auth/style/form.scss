@@ -7,42 +7,45 @@
     padding: 1rem;
     box-sizing: border-box;
     background-color: var(--bg-main);
+    background-image: radial-gradient(circle at top right, rgba(59, 130, 246, 0.05), transparent 40%),
+                      radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.05), transparent 40%);
 
     .form-container {
         width: 100%;
-        max-width: 350px;
+        max-width: 380px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 16px;
 
         .form-box {
-            background-color: var(--bg-main);
-            border: 1px solid var(--border-color);
-            padding: 40px 40px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            padding: 48px 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            border-radius: 2px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
 
             .form-header {
                 text-align: center;
-                margin-bottom: 30px;
+                margin-bottom: 32px;
 
                 h1 {
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-                    font-size: 2.5rem;
-                    font-style: italic;
-                    font-weight: 600;
+                    font-family: 'Inter', sans-serif;
+                    font-size: 2rem;
+                    font-weight: 700;
+                    letter-spacing: -0.05em;
                     color: var(--text-primary);
                     margin: 0;
-                    margin-bottom: 15px;
+                    margin-bottom: 12px;
                 }
                 
                 p {
                     color: var(--text-secondary);
-                    font-size: 1rem;
-                    font-weight: 600;
-                    line-height: 1.3;
+                    font-size: 0.95rem;
+                    font-weight: 400;
+                    line-height: 1.4;
                     margin: 0;
                 }
             }
@@ -51,29 +54,31 @@
                 width: 100%;
                 display: flex;
                 flex-direction: column;
-                gap: 6px;
-                margin-bottom: 15px;
+                gap: 12px;
+                margin-bottom: 20px;
 
                 .input-group {
                     width: 100%;
                     
                     input {
                         width: 100%;
-                        background: var(--bg-secondary);
+                        background: var(--bg-main);
                         border: 1px solid var(--border-color);
                         color: var(--text-primary);
                         outline: none;
-                        padding: 9px 8px 7px;
-                        border-radius: 3px;
+                        padding: 12px 16px;
+                        border-radius: 8px;
                         box-sizing: border-box;
-                        font-size: 12px;
+                        font-size: 0.95rem;
+                        transition: all 0.2s ease;
 
                         &::placeholder {
                             color: var(--text-secondary);
                         }
 
                         &:focus {
-                            border-color: #a8a8a8;
+                            border-color: var(--accent-blue);
+                            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
                         }
                     }
                 }
@@ -81,75 +86,86 @@
                 button {
                     width: 100%;
                     margin-top: 8px;
-                    padding: 7px 16px;
-                    border-radius: 8px;
+                    padding: 12px 16px;
                 }
 
                 .error-message {
                     color: var(--accent-red);
-                    font-size: 14px;
+                    font-size: 0.85rem;
                     text-align: center;
-                    margin-top: 10px;
+                    margin-top: 8px;
+                    background: rgba(239, 68, 68, 0.1);
+                    padding: 8px;
+                    border-radius: 6px;
                 }
 
                 .success-message {
-                    color: #58c322;
-                    font-size: 14px;
+                    color: var(--accent-green);
+                    font-size: 0.85rem;
                     text-align: center;
-                    margin-top: 10px;
+                    margin-top: 8px;
+                    background: rgba(34, 197, 94, 0.1);
+                    padding: 8px;
+                    border-radius: 6px;
                 }
             }
 
             .form-actions {
                 width: 100%;
                 text-align: center;
-                margin-top: 15px;
+                margin-top: 8px;
 
                 .forgot-password {
-                    font-size: 12px;
-                    color: var(--text-primary);
+                    font-size: 0.85rem;
+                    color: var(--accent-blue);
                     text-decoration: none;
+                    font-weight: 500;
                     
                     &:hover {
-                        color: var(--text-secondary);
+                        color: var(--accent-blue-hover);
+                        text-decoration: underline;
                     }
                 }
             }
         }
 
         .bottom-box {
-            background-color: var(--bg-main);
-            border: 1px solid var(--border-color);
-            padding: 20px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            padding: 24px;
             text-align: center;
-            border-radius: 2px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
 
             p {
                 margin: 0;
-                font-size: 14px;
-                color: var(--text-primary);
+                font-size: 0.95rem;
+                color: var(--text-secondary);
 
                 a {
                     color: var(--accent-blue);
                     font-weight: 600;
                     text-decoration: none;
+                    margin-left: 4px;
 
                     &:hover {
                         color: var(--accent-blue-hover);
+                        text-decoration: underline;
                     }
                 }
             }
         }
     }
 
-    @media (max-width: 450px) {
+    @media (max-width: 480px) {
         .form-container {
             .form-box, .bottom-box {
                 border: none;
+                box-shadow: none;
                 background-color: transparent;
             }
             .form-box {
-                padding: 20px;
+                padding: 24px 16px;
             }
         }
     }

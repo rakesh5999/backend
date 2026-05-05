@@ -2,11 +2,12 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding-top: 30px;
+    padding-top: 40px;
+    padding-bottom: 40px;
     box-sizing: border-box;
 
     .feed {
-        max-width: 470px;
+        max-width: 540px;
         width: 100%;
         box-sizing: border-box;
 
@@ -14,21 +15,28 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 32px;
 
             .post {
                 width: 100%;
                 display: flex;
                 flex-direction: column;
-                background: var(--bg-main);
-                border-bottom: 1px solid var(--border-color);
-                padding-bottom: 20px;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-light);
+                border-radius: 16px;
+                box-shadow: var(--shadow-md);
+                overflow: hidden;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+                &:hover {
+                    box-shadow: var(--shadow-lg);
+                }
 
                 .user {
                     display: flex;
                     gap: 12px;
                     align-items: center;
-                    padding: 8px 0 12px;
+                    padding: 16px;
 
                     .img-wrapper {
                         border-radius: 50%;
@@ -36,20 +44,20 @@
                         align-items: center;
                         justify-content: center;
                         padding: 2px;
-                        background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+                        background: var(--insta-gradient);
                         flex-shrink: 0;
 
                         img {
-                            width: 32px;
-                            height: 32px;
+                            width: 36px;
+                            height: 36px;
                             border-radius: 50%;
-                            border: 2px solid var(--bg-main);
+                            border: 2px solid var(--bg-secondary);
                             object-fit: cover;
                         }
                     }
 
                     .username-text {
-                        font-size: 14px;
+                        font-size: 0.95rem;
                         font-weight: 600;
                         color: var(--text-primary);
                         flex: 1;
@@ -59,40 +67,44 @@
                     }
 
                     .follow-btn {
-                        font-size: 14px;
-                        padding: 0;
-                        background: none;
-                        border: none;
+                        font-size: 0.85rem;
+                        padding: 6px 12px;
+                        background: rgba(255, 255, 255, 0.05);
+                        border: 1px solid var(--border-light);
+                        border-radius: 20px;
                         cursor: pointer;
                         font-weight: 600;
-                        transition: color 0.2s;
+                        transition: all 0.2s ease;
                         
-                        &.none { color: var(--accent-blue); }
+                        &.none { color: var(--accent-blue); border-color: rgba(59, 130, 246, 0.3); }
                         &.pending { color: var(--text-secondary); }
                         &.following { color: var(--text-secondary); }
 
-                        &:hover { opacity: 0.7; }
+                        &:hover { 
+                            background: rgba(255, 255, 255, 0.1); 
+                            transform: translateY(-1px);
+                        }
                     }
                 }
 
                 & > img {
                     width: 100%;
-                    max-height: 585px;
-                    object-fit: contain;
-                    background-color: var(--bg-secondary);
-                    border: 1px solid var(--border-color);
-                    border-radius: 4px;
+                    max-height: 600px;
+                    object-fit: cover;
+                    background-color: var(--bg-main);
+                    border-top: 1px solid var(--border-light);
+                    border-bottom: 1px solid var(--border-light);
                 }
 
                 .icons {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    padding: 12px 0 8px;
+                    padding: 16px 16px 12px;
 
                     .left {
                         display: flex;
-                        gap: 16px;
+                        gap: 20px;
                         align-items: center;
                     }
 
@@ -101,8 +113,12 @@
                         height: 24px;
                         color: var(--text-primary);
                         cursor: pointer;
-                        transition: transform 0.1s ease;
-                        &:hover { color: var(--text-secondary); }
+                        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s ease;
+                        
+                        &:hover { 
+                            color: var(--text-secondary); 
+                            transform: scale(1.1);
+                        }
                         &:active { transform: scale(0.9); }
                     }
 
@@ -118,52 +134,57 @@
                 }
 
                 .likes-count {
-                    font-size: 14px;
+                    font-size: 0.95rem;
                     font-weight: 600;
                     margin-bottom: 8px;
+                    padding: 0 16px;
                 }
 
                 .bottom {
-                    padding-bottom: 8px;
+                    padding: 0 16px 12px;
 
                     .caption {
-                        font-size: 14px;
+                        font-size: 0.95rem;
                         color: var(--text-primary);
                         line-height: 1.5;
                         
                         .caption-username {
                             font-weight: 600;
-                            margin-right: 6px;
+                            margin-right: 8px;
                         }
                     }
                 }
 
                 .comments-section {
+                    padding: 0 16px 16px;
+
                     .view-comments-btn {
                         background: none;
                         border: none;
                         color: var(--text-secondary);
-                        font-size: 14px;
+                        font-size: 0.9rem;
                         padding: 0;
-                        margin-bottom: 8px;
+                        margin-bottom: 12px;
                         cursor: pointer;
+                        
+                        &:hover { text-decoration: underline; }
                     }
 
                     .comments-list {
                         display: flex;
                         flex-direction: column;
-                        gap: 4px;
-                        margin-bottom: 8px;
+                        gap: 8px;
+                        margin-bottom: 16px;
 
                         .no-comments {
-                            font-size: 14px;
+                            font-size: 0.9rem;
                             color: var(--text-secondary);
                         }
 
                         .comment {
                             display: flex;
-                            gap: 6px;
-                            font-size: 14px;
+                            gap: 8px;
+                            font-size: 0.9rem;
                             align-items: baseline;
 
                             .comment-user {
@@ -183,40 +204,49 @@
                                 color: var(--text-secondary);
                                 cursor: pointer;
                                 font-size: 12px;
-                                padding: 0;
-                                &:hover { color: var(--text-primary); }
+                                padding: 4px;
+                                border-radius: 4px;
+                                
+                                &:hover { 
+                                    color: var(--accent-red);
+                                    background: rgba(239, 68, 68, 0.1);
+                                }
                             }
                         }
                     }
 
                     .comment-form {
                         display: flex;
-                        gap: 8px;
+                        gap: 12px;
                         align-items: center;
+                        background: var(--bg-main);
+                        padding: 4px 16px;
+                        border-radius: 24px;
+                        border: 1px solid var(--border-light);
 
                         input {
                             flex: 1;
                             background: transparent;
                             border: none;
-                            border-bottom: 1px solid transparent;
                             color: var(--text-primary);
-                            font-size: 14px;
-                            padding: 8px 0;
+                            font-size: 0.95rem;
+                            padding: 10px 0;
                             outline: none;
 
                             &::placeholder { color: var(--text-secondary); }
-                            &:focus { border-bottom-color: var(--border-color); }
                         }
 
                         button.comment-submit {
                             background: transparent;
                             border: none;
                             color: var(--accent-blue);
-                            font-size: 14px;
+                            font-size: 0.95rem;
                             font-weight: 600;
                             cursor: pointer;
-                            &:hover { color: var(--accent-blue-hover); }
-                            &:disabled { color: var(--accent-blue); opacity: 0.5; cursor: default; }
+                            transition: color 0.2s ease;
+                            
+                            &:hover:not(:disabled) { color: var(--accent-blue-hover); }
+                            &:disabled { color: var(--text-secondary); cursor: not-allowed; }
                         }
                     }
                 }
@@ -225,21 +255,16 @@
     }
 
     @media (max-width: 600px) {
-        padding-top: 10px;
+        padding-top: 16px;
         .feed {
             max-width: 100%;
             .posts .post {
-                border-bottom: none;
-                margin-bottom: 10px;
-                & > img {
-                    border-radius: 0;
-                    border-left: none;
-                    border-right: none;
-                }
-                .user, .icons, .likes-count, .bottom, .comments-section {
-                    padding-left: 12px;
-                    padding-right: 12px;
-                }
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+                box-shadow: none;
+                
+                &:hover { box-shadow: none; transform: none; }
             }
         }
     }

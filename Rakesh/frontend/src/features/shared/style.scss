@@ -1,18 +1,32 @@
 @use "./button.scss";
 
 :root {
-  --bg-main: #000000;
-  --bg-secondary: #121212;
-  --bg-tertiary: #262626;
-  --text-primary: #f5f5f5;
-  --text-secondary: #a8a8a8;
-  --border-color: #262626;
-  --accent-blue: #0095f6;
+  /* Instagram Dark Mode Palette */
+  --bg-main: #000000;        /* True Black */
+  --bg-secondary: #000000;   /* True Black (cards are flat in real insta) */
+  --bg-tertiary: #121212;    /* Slightly lighter for hovers */
+  
+  --text-primary: #fafafa;   /* Off-white */
+  --text-secondary: #a8a8a8; /* Gray */
+  
+  --border-color: #262626;   /* Dark gray border */
+  --border-light: #262626;
+  
+  --accent-blue: #0095f6;    /* Insta Blue */
   --accent-blue-hover: #1877f2;
-  --accent-red: #ed4956;
-  --sidebar-width: 244px;
-  --sidebar-width-narrow: 72px;
-  --bottom-nav-height: 50px;
+  --accent-red: #ed4956;     /* Insta Red (likes) */
+  --accent-green: #22c55e;
+  
+  --insta-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  
+  --sidebar-width: 260px;
+  --sidebar-width-narrow: 80px;
+  --bottom-nav-height: 60px;
+  
+  /* Drop Shadows */
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -29,14 +43,21 @@ html, body, #root {
 body {
   background-color: var(--bg-main);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   overflow-y: scroll;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
   color: var(--accent-blue);
   cursor: pointer;
   text-decoration: none;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: var(--accent-blue-hover);
+  }
 }
 
 /* Scrollbar styling */
@@ -51,5 +72,5 @@ a {
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a3a;
+  background: #475569; /* Slate 600 */
 }
