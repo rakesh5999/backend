@@ -1,0 +1,36 @@
+.button {
+    border: none;
+    outline: none;
+    padding-inline: 1rem;
+    padding-block: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-size: 0.875rem;
+    font-weight: 600;
+ 
+    &.primary-button {
+        background-color: var(--accent-blue);
+        color: white;
+        &:hover { background-color: var(--accent-blue-hover); }
+        &:disabled {
+            background-color: #004c8c;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: not-allowed;
+        }
+    }
+ 
+    &.secondary-button {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+        &:hover { background-color: #363636; }
+    }
+ 
+    &.logout-button {
+        background-color: transparent;
+        color: var(--accent-red);
+        &:hover { color: #ff6b77; }
+    }
+ 
+    &:active { transform: scale(0.97); }
+}
