@@ -93,6 +93,16 @@ async function respondToFollow(req,res){
         return res.status(400).json({ message: "Invalid status" })
     }
 
+    // Check if it's already in the desired state
+    const existing = await followModel.findOne({
+        follower: { $regex: new RegExp(`^${follower}$`, 'i') },
+        followee: { $regex: new RegExp(`^${followee}$`, 'i') }
+    });
+
+    if (existing && existing.status === req.body.status) {
+         return res.status(200).json({ message: "status already updated" });
+    }
+
     const respond = await followModel.findOneAndUpdate({
         follower: { $regex: new RegExp(`^${follower}$`, 'i') },
         followee: { $regex: new RegExp(`^${followee}$`, 'i') }
@@ -140,7 +150,7 @@ async function getAllUsersController(req, res) {
     const usersWithStatus = await Promise.all(
         users.map(async (user) => {
             const record = await followModel.findOne({
-                follower: me,
+                follower: { $regex: new RegExp(`^${me}$`, 'i') },
                 followee: user.username
             })
 
@@ -167,7 +177,7 @@ async function getFollowRequestsController(req,res){
      const me = req.user.username
 
      const response=await followModel.find({
-        followee:me,
+        followee: { $regex: new RegExp(`^${me}$`, 'i') },
         status:"pending"
       })
 
