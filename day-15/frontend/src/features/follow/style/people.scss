@@ -1,23 +1,25 @@
+/* Mobile First Styles */
 .people-page {
     width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 40px 20px;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
     box-sizing: border-box;
+    overflow-x: hidden;
 
     .people-container {
         width: 100%;
-        background-color: var(--bg-secondary);
-        border: 1px solid var(--border-light);
-        border-radius: 16px;
-        box-shadow: var(--shadow-md);
-        padding: 24px;
+        border: none;
+        border-radius: 0;
+        background-color: transparent;
+        padding: 0;
+        margin: 0;
         
         .header {
-            margin-bottom: 24px;
+            padding: 20px 16px 12px;
             h1 {
-                font-size: 1.25rem;
-                font-weight: 600;
+                font-size: 1.1rem;
+                font-weight: 700;
                 margin: 0;
                 color: var(--text-primary);
                 text-align: center;
@@ -27,136 +29,110 @@
         .users-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-
-            .empty-state {
-                color: var(--text-secondary);
-                text-align: center;
-                padding: 40px 0;
-                font-size: 0.95rem;
-            }
+            width: 100%;
 
             .user-row {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                padding: 12px;
-                border-radius: 12px;
+                padding: 10px 16px;
+                border-bottom: 1px solid var(--border-light);
                 background-color: var(--bg-main);
-                border: 1px solid var(--border-light);
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-                &:hover {
-                    transform: translateY(-2px);
-                    box-shadow: var(--shadow-sm);
-                    border-color: rgba(255,255,255,0.1);
-                }
+                width: 100%;
+                box-sizing: border-box;
 
                 .user-info {
                     display: flex;
                     align-items: center;
                     gap: 12px;
+                    flex: 1;
+                    min-width: 0;
 
-                    .avatar-placeholder {
+                    .avatar-placeholder, img {
                         width: 44px;
                         height: 44px;
                         border-radius: 50%;
+                        flex-shrink: 0;
+                    }
+                    
+                    .avatar-placeholder {
                         background: var(--insta-gradient);
                         display: flex;
                         align-items: center;
                         justify-content: center;
                         color: white;
-                        font-weight: 600;
-                        font-size: 1.1rem;
-                    }
-                    
-                    img {
-                        width: 44px;
-                        height: 44px;
-                        border-radius: 50%;
-                        object-fit: cover;
-                        border: 2px solid var(--bg-secondary);
+                        font-weight: 700;
                     }
 
-                    p {
-                        color: var(--text-primary);
-                        font-size: 0.95rem;
-                        font-weight: 600;
-                        margin: 0;
+                    .user-details {
+                        display: flex;
+                        flex-direction: column;
+                        min-width: 0;
+                        .username {
+                            color: var(--text-primary);
+                            font-size: 0.9rem;
+                            font-weight: 600;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
+                        .suggestion-reason {
+                            color: var(--text-secondary);
+                            font-size: 0.8rem;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
                     }
                 }
 
                 .follow-btn {
+                    padding: 6px 16px;
+                    border-radius: 8px;
                     font-size: 0.85rem;
                     font-weight: 600;
-                    padding: 8px 16px;
-                    border-radius: 20px;
                     border: none;
                     cursor: pointer;
-                    transition: all 0.2s ease;
+                    flex-shrink: 0;
+                    margin-left: 12px;
 
-                    &.none {
-                        background-color: var(--accent-blue);
-                        color: white;
-                        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
-                        &:hover { 
-                            background-color: var(--accent-blue-hover); 
-                            transform: translateY(-1px);
-                        }
-                    }
-                    &.pending, &.following {
-                        background-color: var(--bg-tertiary);
-                        color: var(--text-primary);
-                        &:hover { background-color: #475569; }
-                    }
-                }
-
-                .respond-btns {
-                    display: flex;
-                    gap: 8px;
-
-                    button {
-                        font-size: 0.85rem;
-                        font-weight: 600;
-                        padding: 8px 16px;
-                        border-radius: 8px;
-                        border: none;
-                        cursor: pointer;
-                        transition: all 0.2s ease;
-
-                        &.accept {
-                            background-color: var(--accent-blue);
-                            color: white;
-                            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
-                            &:hover { 
-                                background-color: var(--accent-blue-hover); 
-                                transform: translateY(-1px);
-                            }
-                        }
-                        &.reject {
-                            background-color: transparent;
-                            color: var(--accent-red);
-                            border: 1px solid rgba(239, 68, 68, 0.5);
-                            &:hover { background-color: rgba(239, 68, 68, 0.1); }
-                        }
+                    &.none { background-color: var(--accent-blue); color: white; }
+                    &.pending, &.following { 
+                        background-color: var(--bg-tertiary); 
+                        color: var(--text-primary); 
+                        border: 1px solid var(--border-light);
                     }
                 }
             }
         }
     }
+}
 
-    @media (max-width: 600px) {
-        padding: 16px;
-        
+/* Desktop Overrides */
+@media (min-width: 769px) {
+    .people-page {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 0 20px;
+
         .people-container {
-            border: none;
-            border-radius: 0;
-            background-color: transparent;
-            box-shadow: none;
-            padding: 0;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            overflow: hidden;
             
-            .user-row {
-                background-color: var(--bg-secondary);
+            .header {
+                padding: 24px;
+                border-bottom: 1px solid var(--border-light);
+            }
+
+            .users-list {
+                .user-row {
+                    padding: 12px 24px;
+                    background-color: transparent;
+                    &:hover { background-color: rgba(255, 255, 255, 0.03); }
+                    &:last-child { border-bottom: none; }
+                }
             }
         }
     }

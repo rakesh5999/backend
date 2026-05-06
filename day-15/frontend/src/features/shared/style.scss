@@ -35,7 +35,12 @@
   box-sizing: border-box;
 }
 
-html, body, #root {
+html {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body, #root {
   width: 100%;
   height: 100%;
 }
@@ -45,8 +50,11 @@ body {
   color: var(--text-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   overflow-y: scroll;
+  overflow-x: hidden; /* Prevent horizontal shifts */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%; /* Prevent automatic text zooming on mobile */
+  touch-action: manipulation; /* Prevent double-tap zoom delay */
 }
 
 a {

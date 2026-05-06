@@ -13,7 +13,13 @@ const Feed = () => {
   }, [])
 
   if (loading || !feed) {
-    return <main style={{display: 'flex', justifyContent: 'center', marginTop: '50px', color: 'var(--text-primary)'}}><h1>Loading...</h1></main>
+    return (
+      <div className='feed-page'>
+        <div className="feed" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+          <h1 style={{ color: 'var(--text-primary)', fontSize: '1.2rem' }}>Loading...</h1>
+        </div>
+      </div>
+    )
   }
 
   return (

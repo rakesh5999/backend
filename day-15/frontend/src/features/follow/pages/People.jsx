@@ -11,7 +11,13 @@ const People = () => {
     }, [])
 
     if (loading || !users) {
-        return <main style={{display: 'flex', justifyContent: 'center', marginTop: '50px', color: 'var(--text-primary)'}}><h1>Loading...</h1></main>
+        return (
+            <div className="people-page">
+                <div className="people-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+                    <h1 style={{ color: 'var(--text-primary)', fontSize: '1.2rem' }}>Loading...</h1>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -31,7 +37,10 @@ const People = () => {
                                         {user.username[0].toUpperCase()}
                                     </div>
                                 )}
-                                <p>{user.username}</p>
+                                <div className="user-details">
+                                    <p className="username">{user.username}</p>
+                                    <p className="suggestion-reason">Suggested for you</p>
+                                </div>
                             </div>
                             <button
                                 className={`follow-btn ${user.followStatus}`}

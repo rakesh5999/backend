@@ -24,7 +24,10 @@ const FollowRequests = () => {
                             <div key={request.follower} className="user-row">
                                 <div className="user-info">
                                     <div className="avatar-placeholder">{request.follower.charAt(0).toUpperCase()}</div>
-                                    <p>{request.follower}</p>
+                                    <div className="user-details">
+                                        <p className="username">{request.follower}</p>
+                                        <p className="suggestion-reason">wants to follow you</p>
+                                    </div>
                                 </div>
                                 <div className="respond-btns">
                                     <button 
