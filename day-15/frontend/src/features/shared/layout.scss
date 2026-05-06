@@ -98,7 +98,28 @@
     }
     
     .nav-label { display: none; }
-    .nav-icon { width: 24px; height: 24px; }
+    .nav-icon { 
+        width: 24px; 
+        height: 24px; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        img, svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        img, .sidebar-profile-img {
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .sidebar-profile-img.active {
+            box-shadow: 0 0 0 2px var(--bg-secondary), 0 0 0 4px var(--text-primary);
+        }
+    }
 }
 
 /* Desktop Styles */
@@ -136,9 +157,27 @@
 
     .sidebar-logo {
         display: flex;
+        align-items: center;
         height: 80px;
         padding: 20px 12px;
-        .logo-text { display: block; font-size: 1.5rem; }
+        cursor: pointer;
+
+        .logo-text { 
+            display: block; 
+            font-size: 1.5rem; 
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+        }
+
+        .logo-icon {
+            display: none; // Hidden by default on desktop, text is shown
+            width: 28px;
+            height: 28px;
+            color: var(--text-primary);
+            
+            svg { width: 100%; height: 100%; }
+        }
     }
 
     .sidebar-bottom { display: block; margin-top: auto; }
@@ -169,7 +208,13 @@
     @media (max-width: 1200px) {
         .sidebar { width: var(--sidebar-width-narrow); padding: 12px 8px; align-items: center; }
         .main-content { margin-left: var(--sidebar-width-narrow); width: calc(100% - var(--sidebar-width-narrow)); }
-        .sidebar-logo .logo-text, .nav-label { display: none; }
+        .sidebar-logo {
+            justify-content: center;
+            padding: 20px 0;
+            .logo-text { display: none; }
+            .logo-icon { display: block; }
+        }
+        .nav-label { display: none; }
         .nav-item { width: 48px; height: 48px; padding: 0; justify-content: center; }
     }
 }
