@@ -4,6 +4,11 @@
     background-color: var(--bg-main);
 }
 
+/* Mobile Header — hidden on desktop, shown on mobile */
+.mobile-header {
+    display: none;
+}
+
 .main-content {
     flex-grow: 1;
     margin-left: var(--sidebar-width);
@@ -161,6 +166,58 @@
 
 /* Mobile */
 @media (max-width: 768px) {
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        padding: 0 16px;
+        background-color: rgba(30, 41, 59, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-light);
+        z-index: 1001;
+
+        .logo-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 10px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            svg {
+                width: 20px;
+                height: 20px;
+                color: var(--accent-red);
+            }
+
+            &:hover {
+                background: rgba(239, 68, 68, 0.2);
+                border-color: rgba(239, 68, 68, 0.4);
+            }
+
+            &:active {
+                transform: scale(0.95);
+            }
+        }
+    }
+
     .sidebar {
         width: 100%;
         height: var(--bottom-nav-height);
@@ -182,6 +239,7 @@
     
     .main-content {
         margin-left: 0;
+        padding-top: 56px;
         padding-bottom: var(--bottom-nav-height);
     }
 
