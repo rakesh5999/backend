@@ -99,7 +99,7 @@ const Profile = () => {
         <div className="profile-page">
             <header className="profile-header">
                 <div className="profile-avatar-container">
-                    <img src={localProfileImage || user?.profileImage || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"} alt="profile" />
+                    <img src={localProfileImage || profileUser?.profileImage || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"} alt="profile" />
                 </div>
 
                 <div className="profile-info">
@@ -258,7 +258,6 @@ const Profile = () => {
                             </div>
                         </div>
                     </div>
-                </div>
             )}
         </div>
     )
