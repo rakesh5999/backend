@@ -5,7 +5,6 @@ const {toFile}=require('@imagekit/nodejs')
 const { Folders } = require('@imagekit/nodejs/resources.js')
 const jwt=require('jsonwebtoken')
 const likeModel=require('../models/like.model')
-const { promises } = require('node:dns')
 const followModel = require('../models/follow.model')
 const commentModel= require('../models/comment.model')
 const saveModel = require('../models/save.model')
@@ -53,7 +52,10 @@ async function getPostController(req,res){
 
     const postsRaw = await postModel.find({
         user: queryUser
-    }).sort({ createdAt: -1 }).populate("user").lean()
+    }).sort({ createdAt: -1 })
+    .limit(50)
+    .populate("user")
+    .lean()
 
     const postIds = postsRaw.map(p => p._id)
     
@@ -187,7 +189,11 @@ async function getFeedController(req,res){
     console.log("Reached getFeedController, user:", req.user);
     try {
         const user = req.user
-        const postsRaw = await postModel.find().sort({ createdAt: -1 }).populate("user").lean()
+        const postsRaw = await postModel.find()
+            .sort({ createdAt: -1 })
+            .limit(50)
+            .populate("user")
+            .lean()
 
         // Get all post IDs
         const postIds = postsRaw.map(p => p._id)

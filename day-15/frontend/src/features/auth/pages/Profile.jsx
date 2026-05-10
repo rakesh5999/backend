@@ -5,7 +5,6 @@ import { usePost } from '../../posts/hook/usePost'
 import { getUserProfile } from '../../follow/services/follow.api'
 import Post from '../../posts/components/Post'
 import '../style/profile.scss'
-import { followUser, unFollowUser } from '../../follow/services/follow.api'
 import { FollowContext } from '../../follow/follow.context'
 
 const Profile = () => {
@@ -43,7 +42,6 @@ const Profile = () => {
         handleAddComment, 
         handleDeleteComment 
     } = usePost()
-    const followContext = useContext(FollowContext)
     const posts = userPosts || []
 
     useEffect(() => {

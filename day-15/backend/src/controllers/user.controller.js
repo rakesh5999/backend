@@ -141,7 +141,11 @@ async function respondToFollow(req,res){
 async function getAllUsersController(req, res) {
     try {
         const me = req.user.username
-        const usersRaw = await userModel.find({ username: { $ne: me } }).select('username profileImage').lean()
+        // Limit to 30 suggested users for performance
+        const usersRaw = await userModel.find({ username: { $ne: me } })
+            .select('username profileImage')
+            .limit(30)
+            .lean()
         const usernames = usersRaw.map(u => u.username)
 
         const followRecords = await followModel.find({
