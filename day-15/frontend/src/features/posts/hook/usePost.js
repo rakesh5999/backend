@@ -14,7 +14,7 @@ export const usePost = ()=>{
 
         setloading(true)
         const data= await getFeed()
-        setfeed(data.posts.reverse())
+        setfeed(data.posts)
         setloading(false)
  }
 
