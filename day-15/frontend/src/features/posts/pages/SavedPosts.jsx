@@ -19,41 +19,70 @@ const SavedPosts = () => {
     }
 
     return (
-        <div className="feed-container">
-            <div className="feed-header">
-                <h2>Saved Posts</h2>
-            </div>
-            
-            {feed && feed.length > 0 ? (
-                <div className="posts-list">
-                    {feed.map((post) => (
-                        <Post
-                            key={post._id}
-                            post={post}
-                            user={post.user}
-                            handleLike={handleLike}
-                            handleUnLike={handleUnLike}
-                            handleFollow={handleFollow}
-                            handleUnFollow={handleUnFollow}
-                            handleSave={handleSave}
-                            handleUnSave={handleUnSave}
-                            handleDelete={handleDelete}
-                            comments={comments}
-                            activePost={activePost}
-                            handleToggleComments={handleToggleComments}
-                            handleAddComment={handleAddComment}
-                            handleDeleteComment={handleDeleteComment}
-                        />
-                    ))}
-                </div>
-            ) : (
-                <div className="no-posts">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+        <div className="feed-page">
+            <div className="feed">
+                <div className="feed-header" style={{
+                    marginBottom: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '0 16px'
+                }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{color: 'var(--text-secondary)'}}>
                         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                     </svg>
-                    <p>No saved posts yet</p>
+                    <h2 style={{fontSize: '1.5rem', fontWeight: '700', color: 'var(--text-primary)'}}>Saved</h2>
                 </div>
-            )}
+                
+                {feed && feed.length > 0 ? (
+                    <div className="posts">
+                        {feed.map((post) => (
+                            <Post
+                                key={post._id}
+                                post={post}
+                                user={post.user}
+                                handleLike={handleLike}
+                                handleUnLike={handleUnLike}
+                                handleFollow={handleFollow}
+                                handleUnFollow={handleUnFollow}
+                                handleSave={handleSave}
+                                handleUnSave={handleUnSave}
+                                handleDelete={handleDelete}
+                                comments={comments}
+                                activePost={activePost}
+                                handleToggleComments={handleToggleComments}
+                                handleAddComment={handleAddComment}
+                                handleDeleteComment={handleDeleteComment}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="no-posts" style={{
+                        marginTop: '100px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '16px',
+                        color: 'var(--text-secondary)'
+                    }}>
+                        <div style={{
+                            width: '80px',
+                            height: '80px',
+                            borderRadius: '50%',
+                            border: '2px solid var(--border-light)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justify-content: 'center'
+                        }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+                        <p style={{fontSize: '1.2rem', fontWeight: '500'}}>No saved posts yet</p>
+                        <p style={{fontSize: '0.9rem', textAlign: 'center', maxWidth: '300px'}}>When you save photos and videos, they'll appear here.</p>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }
