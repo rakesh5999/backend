@@ -51,9 +51,16 @@ const handleGetRequests = async () => {
 
 
 const handleRespond = async (requestId, status) =>{
-    await respondToRequest(requestId,status)
-    await handleGetRequests()
-    await handleRefreshUser()
+    // Optimistic update
+    setRequests(prev => prev.filter(r => r._id !== requestId))
+    
+    try {
+        await respondToRequest(requestId,status)
+        await handleRefreshUser()
+    } catch (err) {
+        console.error("Failed to respond to request", err)
+        await handleGetRequests() // Revert on error
+    }
 }
 
    return{loading,users,requests,handleGetUsers,handleFollow,handleUnFollow,handleGetRequests,handleRespond}

@@ -1,20 +1,20 @@
 const userModel=require('../models/user.model')
 const bcrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken')
-
+const { registerSchema, loginSchema } = require('../validators/auth.validator')
 
 async function registerController(req,res){
-    let {username,email,password,bio,profileImage}=req.body
-
-    // Trim whitespace to prevent trailing spaces from mobile keyboards
-    if (username) username = username.trim()
-    if (email) email = email.trim()
-
-    if (!username || !email || !password) {
+    const validation = registerSchema.safeParse(req.body)
+    
+    if (!validation.success) {
         return res.status(400).json({
-            message: "All fields are required (username, email, password)"
+            message: validation.error.errors[0].message
         })
     }
+
+    let {username,email,password,bio,profileImage}=validation.data
+    username = username.trim()
+    email = email.trim()
 
     const isUserAlreadyExists=await userModel.findOne({
         $or:[
@@ -70,11 +70,17 @@ res.status(201).json({
 
 
  async function loginController(req,res){
-    // The frontend sends the identifier (either username or email) as 'username'
-    let {username, password}=req.body
-    
-    if (username) username = username.trim()
-    if (password) password = password.trim()
+    const validation = loginSchema.safeParse(req.body)
+
+    if (!validation.success) {
+        return res.status(400).json({
+            message: validation.error.errors[0].message
+        })
+    }
+
+    let {username, password}=validation.data
+    username = username.trim()
+    password = password.trim()
 
     const user= await userModel.findOne({
         $or:[

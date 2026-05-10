@@ -84,9 +84,17 @@ export const usePost = ()=>{
  }
 
 
- const handleDelete = async (post) => {
-    const data = await deletepost(post)
-    await handleGetFeed()
+ const handleDelete = async (postId) => {
+    // Optimistic update
+    const previousFeed = [...feed]
+    setfeed(prevFeed => prevFeed.filter(p => p._id !== postId))
+    
+    try {
+        await deletepost(postId)
+    } catch (err) {
+        console.error("Failed to delete post", err)
+        setfeed(previousFeed) // Revert on error
+    }
 }
 
 const handleToggleComments = async (postId) => {

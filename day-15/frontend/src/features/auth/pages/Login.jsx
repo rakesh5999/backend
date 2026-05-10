@@ -1,8 +1,13 @@
 import React, { useState } from 'react'
 import '../style/form.scss'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
-import { useNavigate } from 'react-router'
+import { z } from 'zod'
+
+const loginSchema = z.object({
+  username: z.string().min(1, "Username or Email is required"),
+  password: z.string().min(1, "Password is required"),
+});
 
 const Login = () => {
 
@@ -18,8 +23,10 @@ const Login = () => {
     e.preventDefault()
     setError(null)
 
-    if (!username.trim() || !password.trim()) {
-      setError("Please enter your username and password.")
+    const result = loginSchema.safeParse({ username, password })
+
+    if (!result.success) {
+      setError(result.error.errors[0].message)
       return
     }
 

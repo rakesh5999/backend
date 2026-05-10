@@ -1,8 +1,14 @@
 import React, { useState } from 'react'
 import '../style/form.scss'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
-import { useNavigate } from 'react-router'
+import { z } from 'zod'
+
+const registerSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters long"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+});
 
 const Register = () => {
   const [username, setusername] = useState("")
@@ -18,8 +24,10 @@ const Register = () => {
     e.preventDefault()
     setError(null)
 
-    if (!username.trim() || !email.trim() || !password.trim()) {
-      setError("All fields are required.")
+    const result = registerSchema.safeParse({ username, email, password })
+
+    if (!result.success) {
+      setError(result.error.errors[0].message)
       return
     }
 
