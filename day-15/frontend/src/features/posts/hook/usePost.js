@@ -99,9 +99,15 @@ export const usePost = ()=>{
 
  const handleUnSave = async (postId) => {
     // Optimistic update
-    setfeed(prevFeed => prevFeed.map(p => 
-        p._id === postId ? { ...p, isSaved: false } : p
-    ))
+    const isSavedPage = window.location.pathname === '/saved'
+    
+    if (isSavedPage) {
+        setfeed(prevFeed => prevFeed.filter(p => p._id !== postId))
+    } else {
+        setfeed(prevFeed => prevFeed.map(p => 
+            p._id === postId ? { ...p, isSaved: false } : p
+        ))
+    }
     
     try {
         await unsavePost(postId)
