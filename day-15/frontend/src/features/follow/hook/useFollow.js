@@ -21,22 +21,39 @@ export const useFollow = ()=>{
         }
     }
 
-const handleFollow =async(username,onSuccess)=>{
-  await followUser(username)
-   await handleGetUsers()
-   await handleRefreshUser()
-    if (onSuccess) await onSuccess()
-}
+    const handleFollow = async (username, onSuccess) => {
+        // Optimistic update
+        const previousUsers = [...users]
+        setUsers(prev => prev.map(u => 
+            u.username === username ? { ...u, followStatus: 'pending' } : u
+        ))
 
+        try {
+            await followUser(username)
+            await handleRefreshUser()
+            if (onSuccess) await onSuccess()
+        } catch (err) {
+            console.error("Failed to follow", err)
+            setUsers(previousUsers) // Revert on error
+        }
+    }
 
+    const handleUnFollow = async (username, onSuccess) => {
+        // Optimistic update
+        const previousUsers = [...users]
+        setUsers(prev => prev.map(u => 
+            u.username === username ? { ...u, followStatus: 'none' } : u
+        ))
 
-
-const handleUnFollow =async(username,onSuccess)=>{
-  await unFollowUser(username)
-   await handleGetUsers()
-   await handleRefreshUser()
-    if (onSuccess) await onSuccess()
-}
+        try {
+            await unFollowUser(username)
+            await handleRefreshUser()
+            if (onSuccess) await onSuccess()
+        } catch (err) {
+            console.error("Failed to unfollow", err)
+            setUsers(previousUsers) // Revert on error
+        }
+    }
 
     const handleGetRequests = async () => {
         if (!requests || requests.length === 0) setLoading(true)
