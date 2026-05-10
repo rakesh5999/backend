@@ -10,6 +10,8 @@ const Profile = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [selectedPost, setSelectedPost] = useState(null)
     const [uploading, setUploading] = useState(false)
+    const [previewUrl, setPreviewUrl] = useState(null)
+    const [localProfileImage, setLocalProfileImage] = useState(null)
     
     const { 
         feed, 
@@ -29,14 +31,33 @@ const Profile = () => {
         handleRefreshUser()
     }, [])
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0]
+        if (file) {
+            const url = URL.createObjectURL(file)
+            setPreviewUrl(url)
+        }
+    }
+
     async function handleSubmit(e) {
         e.preventDefault()
         const file = imageRef.current.files[0]
         if (file) {
             setUploading(true)
-            await handleUpdateProfile(file)
-            setUploading(false)
-            setIsEditModalOpen(false)
+            // Optimistic update
+            const url = URL.createObjectURL(file)
+            setLocalProfileImage(url)
+            
+            try {
+                await handleUpdateProfile(file)
+                setIsEditModalOpen(false)
+                setPreviewUrl(null)
+            } catch (err) {
+                console.error("Failed to update profile image", err)
+                setLocalProfileImage(null) // Revert on error
+            } finally {
+                setUploading(false)
+            }
         }
     }
 
@@ -51,7 +72,7 @@ const Profile = () => {
         <div className="profile-page">
             <header className="profile-header">
                 <div className="profile-avatar-container">
-                    <img src={user?.profileImage || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"} alt="profile" />
+                    <img src={localProfileImage || user?.profileImage || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"} alt="profile" />
                 </div>
 
                 <div className="profile-info">
@@ -125,17 +146,19 @@ const Profile = () => {
                             <button onClick={() => setIsEditModalOpen(false)}>✕</button>
                         </div>
                         <div className="modal-body">
-                            <img src={user?.profileImage || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"} alt="Current Avatar" className="current-avatar" />
+                            <img src={previewUrl || user?.profileImage || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"} alt="Avatar Preview" className="current-avatar" />
                             
                             <form onSubmit={handleSubmit} style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                                 <label htmlFor="profileImage" className="file-label">
-                                    Change profile photo
+                                    {previewUrl ? "Change selection" : "Change profile photo"}
                                 </label>
                                 <input
                                     ref={imageRef}
                                     hidden
                                     type="file"
                                     id="profileImage"
+                                    onChange={handleFileChange}
+                                    accept="image/*"
                                 />
                                 <button type="submit" className="button primary-button save-btn" disabled={uploading}>
                                     {uploading ? "Saving..." : "Save Changes"}
