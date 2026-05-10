@@ -22,7 +22,7 @@ const Post = ({ user, post, loading, handleLike, handleUnLike, handleFollow, han
 
       <div className="user">
         <div className="img-wrapper" onClick={() => navigate(`/profile/${user?.username}`)} style={{cursor: 'pointer'}}>
-          <img src={user?.profileImage || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"} alt={user?.username || "user"} />
+          <img src={user?.profileImage ? `${user.profileImage}?tr=w-50,h-50,fo-auto` : "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"} alt={user?.username || "user"} />
         </div>
         <span className="username-text" onClick={() => navigate(`/profile/${user?.username}`)} style={{cursor: 'pointer'}}>
           {user?.username || "Unknown User"}
@@ -49,7 +49,7 @@ const Post = ({ user, post, loading, handleLike, handleUnLike, handleFollow, han
         )}
       </div>
 
-      <img src={post.imgUri} alt="Post content" />
+      <img src={post.imgUri ? `${post.imgUri}?tr=w-800` : ""} alt="Post content" />
 
       <div className="icons">
         <div className="left">

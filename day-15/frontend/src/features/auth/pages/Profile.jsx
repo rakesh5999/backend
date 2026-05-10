@@ -105,7 +105,7 @@ const Profile = () => {
         <div className="profile-page">
             <header className="profile-header">
                 <div className="profile-avatar-container">
-                    <img src={localProfileImage || profileUser?.profileImage || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"} alt="profile" />
+                    <img src={localProfileImage || (profileUser?.profileImage ? `${profileUser.profileImage}?tr=w-150,h-150,fo-auto` : "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg")} alt="profile" />
                 </div>
 
                 <div className="profile-info">
@@ -195,7 +195,7 @@ const Profile = () => {
             <div className="profile-grid">
                 {posts.map(post => (
                     <div className="grid-item" key={post._id} onClick={() => setSelectedPost(post)}>
-                        <img src={post.imgUri} alt="Post" />
+                        <img src={post.imgUri ? `${post.imgUri}?tr=w-300,h-300,fo-auto` : ""} alt="Post" />
                         <div className="grid-item-overlay">
                             <div className="overlay-stat">
                                 <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
