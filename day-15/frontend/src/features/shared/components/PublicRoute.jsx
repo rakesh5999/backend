@@ -1,12 +1,13 @@
 import React from 'react'
 import { Navigate, Outlet } from 'react-router'
 import { useAuth } from '../../auth/hooks/useAuth'
+import SplashScreen from './SplashScreen'
 
 const PublicRoute = () => {
     const { user, authLoading } = useAuth()
 
     if (authLoading) {
-        return <main style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#1d1d1d' }}><h1 style={{color: 'white'}}>Loading...</h1></main>
+        return <SplashScreen />
     }
 
     if (user) {
