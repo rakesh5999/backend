@@ -2,11 +2,13 @@ import { followUser,unFollowUser, respondToRequest,getAllUser,getFollowRequests 
 import { useContext  } from "react";
 import { FollowContext } from "../follow.context";
 import { useAuth } from "../../auth/hooks/useAuth";
+import { PostContext } from "../../posts/post.context";
 
 export const useFollow = ()=>{
     const context=useContext(FollowContext)
     const {handleRefreshUser} = useAuth()
     const {loading,setLoading,users,setUsers,requests,setRequests} = context
+    const postContext = useContext(PostContext)
 
 
     const handleGetUsers = async () => {
@@ -30,6 +32,15 @@ export const useFollow = ()=>{
 
         try {
             await followUser(username)
+
+            // Sync with PostContext
+            const postUpdater = (prev) => prev.map(p => 
+                p.user?.username === username ? { ...p, followStatus: 'pending' } : p
+            )
+            postContext?.setfeed(postUpdater)
+            postContext?.setuserPosts(postUpdater)
+            postContext?.setsavedPosts(postUpdater)
+
             await handleRefreshUser()
             if (onSuccess) await onSuccess()
         } catch (err) {
@@ -47,6 +58,15 @@ export const useFollow = ()=>{
 
         try {
             await unFollowUser(username)
+
+            // Sync with PostContext
+            const postUpdater = (prev) => prev.map(p => 
+                p.user?.username === username ? { ...p, followStatus: 'none' } : p
+            )
+            postContext?.setfeed(postUpdater)
+            postContext?.setuserPosts(postUpdater)
+            postContext?.setsavedPosts(postUpdater)
+
             await handleRefreshUser()
             if (onSuccess) await onSuccess()
         } catch (err) {

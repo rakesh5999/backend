@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useContext } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
 import { usePost } from '../../posts/hook/usePost'
@@ -6,6 +6,7 @@ import { getUserProfile } from '../../follow/services/follow.api'
 import Post from '../../posts/components/Post'
 import '../style/profile.scss'
 import { followUser, unFollowUser } from '../../follow/services/follow.api'
+import { FollowContext } from '../../follow/follow.context'
 
 const Profile = () => {
     const navigate = useNavigate()
@@ -42,6 +43,7 @@ const Profile = () => {
         handleAddComment, 
         handleDeleteComment 
     } = usePost()
+    const followContext = useContext(FollowContext)
 
     useEffect(() => {
         async function fetchProfile() {
@@ -131,14 +133,14 @@ const Profile = () => {
                                     
                                     try {
                                         if (prevStatus === 'following' || prevStatus === 'pending') {
-                                            await unFollowUser(profileUser.username)
+                                            await handleUnFollow(profileUser.username)
                                         } else {
-                                            await followUser(profileUser.username)
+                                            await handleFollow(profileUser.username)
                                         }
-                                        // Refresh profile data to get real status/counts
+                                        
+                                        // Refresh profile data to get real counts (followers/following)
                                         const data = await getUserProfile(profileUser.username)
                                         setProfileUser(data.user)
-                                        await handleRefreshUser()
                                     } catch (err) {
                                         console.error("Follow action failed", err)
                                         setProfileUser(prev => ({ ...prev, followStatus: prevStatus }))

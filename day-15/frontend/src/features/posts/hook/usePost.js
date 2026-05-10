@@ -3,12 +3,14 @@ import { followUser, unFollowUser } from "../../follow/services/follow.api";
 import { useContext  } from "react";
 import { PostContext } from "../post.context";
 import { useAuth } from "../../auth/hooks/useAuth";
+import { FollowContext } from "../../follow/follow.context";
 
 export const usePost = ()=>{
     const context= useContext(PostContext)
     const { handleRefreshUser } = useAuth()
 
     const {loading,setloading,post,setpost,feed,setfeed, userPosts, setuserPosts, savedPosts, setsavedPosts, comments, setcomments, activePost, setactivePost} = context
+    const followContext = useContext(FollowContext)
 
     const handleGetFeed = async () => {
         if (!feed || feed.length === 0) setloading(true)
@@ -81,6 +83,12 @@ export const usePost = ()=>{
         setuserPosts(updater)
         setsavedPosts(updater)
         
+        if (followContext?.setUsers) {
+            followContext.setUsers(prev => prev.map(u => 
+                u.username === username ? { ...u, followStatus: 'pending' } : u
+            ))
+        }
+        
         try {
             await followUser(username)
             await handleRefreshUser()
@@ -97,6 +105,12 @@ export const usePost = ()=>{
         setfeed(updater)
         setuserPosts(updater)
         setsavedPosts(updater)
+
+        if (followContext?.setUsers) {
+            followContext.setUsers(prev => prev.map(u => 
+                u.username === username ? { ...u, followStatus: 'none' } : u
+            ))
+        }
         
         try {
             await unFollowUser(username)
