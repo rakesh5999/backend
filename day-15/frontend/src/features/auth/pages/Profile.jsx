@@ -122,14 +122,26 @@ const Profile = () => {
                             <button 
                                 className={`follow-btn ${profileUser?.followStatus}`}
                                 onClick={async () => {
-                                    if (profileUser.followStatus === 'following' || profileUser.followStatus === 'pending') {
-                                        await unFollowUser(profileUser.username)
-                                    } else {
-                                        await followUser(profileUser.username)
+                                    const prevStatus = profileUser.followStatus
+                                    const newStatus = (prevStatus === 'following' || prevStatus === 'pending') ? 'none' : 'pending'
+                                    
+                                    // Optimistic update
+                                    setProfileUser(prev => ({ ...prev, followStatus: newStatus }))
+                                    
+                                    try {
+                                        if (prevStatus === 'following' || prevStatus === 'pending') {
+                                            await unFollowUser(profileUser.username)
+                                        } else {
+                                            await followUser(profileUser.username)
+                                        }
+                                        // Refresh profile data to get real status/counts
+                                        const data = await getUserProfile(profileUser.username)
+                                        setProfileUser(data.user)
+                                        await handleRefreshUser()
+                                    } catch (err) {
+                                        console.error("Follow action failed", err)
+                                        setProfileUser(prev => ({ ...prev, followStatus: prevStatus }))
                                     }
-                                    // Refresh profile data
-                                    const data = await getUserProfile(profileUser.username)
-                                    setProfileUser(data.user)
                                 }}
                                 style={{
                                     marginLeft: '20px',
@@ -139,7 +151,8 @@ const Profile = () => {
                                     background: profileUser?.followStatus === 'none' ? 'var(--accent-blue)' : 'rgba(255,255,255,0.1)',
                                     color: profileUser?.followStatus === 'none' ? 'white' : 'var(--text-primary)',
                                     fontWeight: '600',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease'
                                 }}
                             >
                                 {profileUser?.followStatus === 'following' ? 'Following' 
