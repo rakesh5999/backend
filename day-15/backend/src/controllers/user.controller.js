@@ -260,15 +260,12 @@ async function getUserProfileController(req, res) {
 }
 
 
-
-
-
-
 module.exports={
     followUserController,
     unfollowUserController,
     respondToFollow,
     getAllUsersController,
     getFollowRequestsController,
-    updateProfileController
+    updateProfileController,
+    getUserProfileController
 }
