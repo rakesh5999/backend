@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { useNavigate } from 'react-router'
 import { AuthContext } from '../../auth/auth.context'
 
-const Post = ({ user, post, loading, handleLike, handleUnLike, handleFollow, handleUnFollow, handleSave, handleUnSave, handleDelete, comments, activePost, handleToggleComments, handleAddComment,handleDeleteComment }) => {
+const Post = ({ user, post, loading, handleLike, handleUnLike, handleFollow, handleUnFollow, handleSave, handleUnSave, handleDelete, comments, activePost, handleToggleComments, handleAddComment,handleDeleteComment, hideFollow }) => {
 
   const navigate = useNavigate()
   const { user: loggedInUser } = useContext(AuthContext)
@@ -28,7 +28,7 @@ const Post = ({ user, post, loading, handleLike, handleUnLike, handleFollow, han
           {user?.username || "Unknown User"}
         </span>
 
-        {!isOwnPost && (
+        {!isOwnPost && !hideFollow && (
           <>
             <span style={{color: 'var(--text-secondary)', fontSize: '14px', margin: '0 4px'}}>•</span>
             <button
