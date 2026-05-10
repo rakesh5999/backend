@@ -68,21 +68,35 @@
 
                     .follow-btn {
                         font-size: 0.85rem;
-                        padding: 6px 12px;
-                        background: rgba(255, 255, 255, 0.05);
-                        border: 1px solid var(--border-light);
-                        border-radius: 20px;
+                        padding: 6px 16px;
+                        border-radius: 8px;
                         cursor: pointer;
                         font-weight: 600;
-                        transition: all 0.2s ease;
+                        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                        border: 1px solid transparent;
                         
-                        &.none { color: var(--accent-blue); border-color: rgba(59, 130, 246, 0.3); }
-                        &.pending { color: var(--text-secondary); }
-                        &.following { color: var(--text-secondary); }
+                        &.none { 
+                            background: var(--accent-blue); 
+                            color: white;
+                            &:hover {
+                                background: var(--accent-blue-hover, #2563eb);
+                                transform: translateY(-1px);
+                                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+                            }
+                        }
 
-                        &:hover { 
+                        &.pending, &.following { 
                             background: rgba(255, 255, 255, 0.1); 
-                            transform: translateY(-1px);
+                            color: var(--text-primary);
+                            border-color: var(--border-light);
+                            &:hover {
+                                background: rgba(255, 255, 255, 0.15);
+                                border-color: var(--text-secondary);
+                            }
+                        }
+
+                        &:active {
+                            transform: scale(0.95);
                         }
                     }
                 }
