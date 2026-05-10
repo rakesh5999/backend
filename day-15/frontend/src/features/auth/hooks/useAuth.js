@@ -48,8 +48,8 @@ export function useAuth() {
         }
     }
 
-    const handleUpdateProfile = async (imageFile) => {
-        await updateProfile(imageFile)
+    const handleUpdateProfile = async (imageFile, bio) => {
+        await updateProfile(imageFile, bio)
         await handleRefreshUser()
     }
 

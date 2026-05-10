@@ -193,22 +193,39 @@ async function getFollowRequestsController(req,res){
     })
 }
 
-async function updateProfileController(req,res){
-    const user = req.user
-    const file = await imagekit.files.upload({
-            file: await toFile(Buffer.from(req.file.buffer), 'file'),
-            fileName: "profile",
-            folder: "insta-clone-profiles"  
-          })
-          const updatedUser = await userModel.findByIdAndUpdate(
-                       user.id,
-                      { profileImage: file.url },
-                      { new: true }
-                    )
-                    res.status(200).json({
-                       message: "profile image updated successfully",
-                       updatedUser
-                  })
+async function updateProfileController(req, res) {
+    try {
+        const user = req.user
+        const { bio } = req.body
+        const updateData = {}
+
+        if (bio !== undefined) {
+            updateData.bio = bio
+        }
+
+        if (req.file) {
+            const file = await imagekit.files.upload({
+                file: await toFile(Buffer.from(req.file.buffer), 'file'),
+                fileName: "profile",
+                folder: "insta-clone-profiles"
+            })
+            updateData.profileImage = file.url
+        }
+
+        const updatedUser = await userModel.findByIdAndUpdate(
+            user.id,
+            updateData,
+            { new: true }
+        )
+
+        res.status(200).json({
+            message: "Profile updated successfully",
+            updatedUser
+        })
+    } catch (error) {
+        console.error("Error updating profile:", error)
+        res.status(500).json({ message: "Failed to update profile" })
+    }
 }
 
 async function getUserProfileController(req, res) {

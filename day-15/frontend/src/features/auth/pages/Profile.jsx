@@ -16,6 +16,7 @@ const Profile = () => {
     const [uploading, setUploading] = useState(false)
     const [previewUrl, setPreviewUrl] = useState(null)
     const [localProfileImage, setLocalProfileImage] = useState(null)
+    const [editBio, setEditBio] = useState("")
     const [listModal, setListModal] = useState({ isOpen: false, type: '', data: [] })
     
     const { username: urlUsername } = useParams()
@@ -74,22 +75,20 @@ const Profile = () => {
     async function handleSubmit(e) {
         e.preventDefault()
         const file = imageRef.current.files[0]
-        if (file) {
-            setUploading(true)
-            // Optimistic update
-            const url = URL.createObjectURL(file)
-            setLocalProfileImage(url)
-            
-            try {
-                await handleUpdateProfile(file)
-                setIsEditModalOpen(false)
-                setPreviewUrl(null)
-            } catch (err) {
-                console.error("Failed to update profile image", err)
-                setLocalProfileImage(null) // Revert on error
-            } finally {
-                setUploading(false)
+        
+        setUploading(true)
+        try {
+            await handleUpdateProfile(file, editBio)
+            setIsEditModalOpen(false)
+            setPreviewUrl(null)
+            if (file) {
+                const url = URL.createObjectURL(file)
+                setLocalProfileImage(url)
             }
+        } catch (err) {
+            console.error("Failed to update profile", err)
+        } finally {
+            setUploading(false)
         }
     }
 
@@ -110,7 +109,10 @@ const Profile = () => {
                     <div className="profile-top">
                         <h2 className="username">{profileUser?.username || "user"}</h2>
                         {isOwnProfile ? (
-                            <button className="edit-profile-btn" onClick={() => setIsEditModalOpen(true)}>
+                            <button className="edit-profile-btn" onClick={() => {
+                                setEditBio(profileUser?.bio || "")
+                                setIsEditModalOpen(true)
+                            }}>
                                 Edit Profile
                             </button>
                         ) : (
@@ -223,6 +225,27 @@ const Profile = () => {
                                     onChange={handleFileChange}
                                     accept="image/*"
                                 />
+                                
+                                <div className="bio-edit-field" style={{width: '100%', marginTop: '20px'}}>
+                                    <label style={{display: 'block', marginBottom: '8px', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)'}}>Bio</label>
+                                    <textarea 
+                                        value={editBio}
+                                        onChange={(e) => setEditBio(e.target.value)}
+                                        placeholder="Write your bio..."
+                                        rows="4"
+                                        style={{
+                                            width: '100%',
+                                            background: 'rgba(255,255,255,0.05)',
+                                            border: '1px solid var(--border-light)',
+                                            borderRadius: '8px',
+                                            padding: '12px',
+                                            color: 'var(--text-primary)',
+                                            resize: 'none',
+                                            fontSize: '0.9rem'
+                                        }}
+                                    />
+                                </div>
+
                                 <button type="submit" className="button primary-button save-btn" disabled={uploading}>
                                     {uploading ? "Saving..." : "Save Changes"}
                                 </button>

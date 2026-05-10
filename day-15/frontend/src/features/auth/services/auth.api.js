@@ -54,9 +54,10 @@ export async function logout() {
 
 
 
-export async function updateProfile(imageFile) {
+export async function updateProfile(imageFile, bio) {
     const formData = new FormData()
-    formData.append("image", imageFile)
+    if (imageFile) formData.append("image", imageFile)
+    if (bio !== undefined) formData.append("bio", bio)
 
     const response = await userApi.patch("/update", formData)
     return response.data
