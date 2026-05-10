@@ -8,13 +8,23 @@ const CreatePost = () => {
     const imageRef = useRef(null)
     const [caption, setcaption] = useState("")
     const [previewImage, setPreviewImage] = useState(null)
+    const [error, setError] = useState("")
     
     const { loading, handleCreatePost } = usePost()
     const navigate = useNavigate()
 
     const handleImageChange = (e) => {
         const file = e.target.files[0]
+        setError("")
+        
         if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+                setError("your post is exceeding more than 2mb")
+                setPreviewImage(null)
+                e.target.value = null // Reset input
+                return
+            }
+
             const reader = new FileReader()
             reader.onloadend = () => {
                 setPreviewImage(reader.result)
@@ -28,6 +38,11 @@ const CreatePost = () => {
         const file = imageRef.current.files[0]
 
         if (!file) return;
+        
+        if (file.size > 2 * 1024 * 1024) {
+            setError("your post is exceeding more than 2mb")
+            return
+        }
 
         await handleCreatePost(file, caption)
         navigate('/feed')
@@ -44,6 +59,7 @@ const CreatePost = () => {
                         </svg>
                     </button>
                     <h1>Create new post</h1>
+                    {error && <div className="error-message-top" style={{color: '#ff4d4d', fontSize: '0.8rem', fontWeight: '600'}}>{error}</div>}
                     <button 
                         className="submit-btn-top" 
                         onClick={handleSubmit} 
