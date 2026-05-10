@@ -1,4 +1,4 @@
-import { getFeed,createPost,likepost,unlikepost,deletepost,addcomment,getcomment,deletecomment } from "../services/post.api";
+import { getFeed,createPost,likepost,unlikepost,deletepost,addcomment,getcomment,deletecomment, savePost, unsavePost, getSavedPosts } from "../services/post.api";
 import { followUser, unFollowUser } from "../../follow/services/follow.api";
 import { useContext  } from "react";
 import { PostContext } from "../post.context";
@@ -83,6 +83,46 @@ export const usePost = ()=>{
     }
  }
 
+ const handleSave = async (postId) => {
+    // Optimistic update
+    setfeed(prevFeed => prevFeed.map(p => 
+        p._id === postId ? { ...p, isSaved: true } : p
+    ))
+    
+    try {
+        await savePost(postId)
+    } catch (err) {
+        console.error("Failed to save post", err)
+        await handleGetFeed() // Revert
+    }
+ }
+
+ const handleUnSave = async (postId) => {
+    // Optimistic update
+    setfeed(prevFeed => prevFeed.map(p => 
+        p._id === postId ? { ...p, isSaved: false } : p
+    ))
+    
+    try {
+        await unsavePost(postId)
+    } catch (err) {
+        console.error("Failed to unsave post", err)
+        await handleGetFeed() // Revert
+    }
+ }
+
+ const handleGetSavedPosts = async () => {
+    setloading(true)
+    try {
+        const data = await getSavedPosts()
+        setfeed(data.posts)
+    } catch (err) {
+        console.error("Failed to fetch saved posts", err)
+    } finally {
+        setloading(false)
+    }
+ }
+
 
  const handleDelete = async (postId) => {
     // Optimistic update
@@ -118,6 +158,6 @@ const handleDeleteComment = async (commentId) => {
     setcomments(comments.filter(c => c._id !== commentId))
 }
 
-    return {loading,post,feed,handleGetFeed,handleCreatePost,handleLike,handleUnLike,handleFollow,handleUnFollow,handleDelete,handleToggleComments,handleAddComment,comments, activePost,handleDeleteComment}
+    return {loading,post,feed,handleGetFeed,handleCreatePost,handleLike,handleUnLike,handleFollow,handleUnFollow,handleSave,handleUnSave,handleGetSavedPosts,handleDelete,handleToggleComments,handleAddComment,comments, activePost,handleDeleteComment}
 
 }

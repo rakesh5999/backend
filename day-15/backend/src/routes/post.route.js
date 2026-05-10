@@ -41,6 +41,9 @@ postRouter.post("/comments/:postId",identifyUser,postController.addCommentContro
 postRouter.get("/comments/:postId",identifyUser,postController.getCommentsController)
 
 postRouter.delete("/comments/delete/:commentId", identifyUser, postController.deleteCommentController)
+postRouter.post("/save/:postId", identifyUser, postController.savePostController)
+postRouter.post("/unsave/:postId", identifyUser, postController.unsavePostController)
+postRouter.get("/saved", identifyUser, postController.getSavedPostsController)
 
 
 module.exports=postRouter

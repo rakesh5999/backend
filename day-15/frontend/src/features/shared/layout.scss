@@ -91,6 +91,7 @@
     height: 100%;
     flex: 1;
     color: var(--text-secondary);
+    cursor: pointer;
     
     &.active {
         border-top: 2px solid var(--accent-blue);

@@ -7,6 +7,7 @@ const likeModel=require('../models/like.model')
 const { promises } = require('node:dns')
 const followModel = require('../models/follow.model')
 const commentModel= require('../models/comment.model')
+const saveModel = require('../models/save.model')
 
 const imagekit= new Imagekit({
     privateKey:process.env.IMAGEKIT_PRIVATE_KEY
@@ -54,6 +55,12 @@ async function getPostController(req,res){
     }).lean()
     const myLikePostIds = new Set(myLikes.map(l => l.post.toString()))
 
+    const mySaves = await saveModel.find({
+        user: req.user.username,
+        post: { $in: postIds }
+    }).lean()
+    const mySavePostIds = new Set(mySaves.map(s => s.post.toString()))
+
     const likeCounts = await likeModel.aggregate([
         { $match: { post: { $in: postIds } } },
         { $group: { _id: "$post", count: { $sum: 1 } } }
@@ -65,6 +72,7 @@ async function getPostController(req,res){
         const pid = post._id.toString()
         post.likesCount = countsMap[pid] || 0
         post.isLiked = myLikePostIds.has(pid)
+        post.isSaved = mySavePostIds.has(pid)
         return post
     })
 
@@ -183,6 +191,12 @@ async function getFeedController(req,res){
         }).lean()
         const myLikePostIds = new Set(myLikes.map(l => l.post.toString()))
 
+        const mySaves = await saveModel.find({
+            user: user.username,
+            post: { $in: postIds }
+        }).lean()
+        const mySavePostIds = new Set(mySaves.map(s => s.post.toString()))
+
         // Bulk fetch total like counts using aggregation
         const likeCounts = await likeModel.aggregate([
             { $match: { post: { $in: postIds } } },
@@ -203,6 +217,7 @@ async function getFeedController(req,res){
         const posts = postsRaw.map(post => {
             const pid = post._id.toString()
             post.isLiked = myLikePostIds.has(pid)
+            post.isSaved = mySavePostIds.has(pid)
             post.likesCount = countsMap[pid] || 0
 
             if (post.user) {
@@ -336,7 +351,66 @@ async function deleteCommentController(req, res) {
     res.status(200).json({ message: "comment deleted successfully" })
 }
 
+async function savePostController(req, res) {
+    const postId = req.params.postId
+    const username = req.user.username
 
+    const alreadySaved = await saveModel.findOne({ post: postId, user: username })
+    if (alreadySaved) {
+        return res.status(400).json({ message: "Post already saved" })
+    }
+
+    const save = await saveModel.create({ post: postId, user: username })
+    res.status(201).json({ message: "Post saved successfully", save })
+}
+
+async function unsavePostController(req, res) {
+    const postId = req.params.postId
+    const username = req.user.username
+
+    const save = await saveModel.findOneAndDelete({ post: postId, user: username })
+    if (!save) {
+        return res.status(400).json({ message: "Post not saved" })
+    }
+
+    res.status(200).json({ message: "Post unsaved successfully" })
+}
+
+async function getSavedPostsController(req, res) {
+    try {
+        const username = req.user.username
+        const savedRecords = await saveModel.find({ user: username }).select('post').lean()
+        const postIds = savedRecords.map(r => r.post)
+
+        const postsRaw = await postModel.find({ _id: { $in: postIds } }).sort({ createdAt: -1 }).populate("user").lean()
+        
+        // Similar to getFeed, populate isLiked, likesCount, and isSaved
+        const myLikes = await likeModel.find({ user: username, post: { $in: postIds } }).lean()
+        const myLikePostIds = new Set(myLikes.map(l => l.post.toString()))
+        
+        const mySaves = await saveModel.find({ user: username, post: { $in: postIds } }).lean()
+        const mySavePostIds = new Set(mySaves.map(s => s.post.toString()))
+
+        const likeCounts = await likeModel.aggregate([
+            { $match: { post: { $in: postIds } } },
+            { $group: { _id: "$post", count: { $sum: 1 } } }
+        ])
+        const countsMap = {}
+        likeCounts.forEach(c => countsMap[c._id.toString()] = c.count)
+
+        const posts = postsRaw.map(post => {
+            const pid = post._id.toString()
+            post.isLiked = myLikePostIds.has(pid)
+            post.isSaved = mySavePostIds.has(pid)
+            post.likesCount = countsMap[pid] || 0
+            return post
+        })
+
+        res.status(200).json({ message: "Saved posts fetched successfully", posts })
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error: error.message })
+    }
+}
 
 module.exports={
     createPostController,
@@ -348,5 +422,8 @@ module.exports={
     DeletePostController,
     addCommentController,
     getCommentsController,
-    deleteCommentController
+    deleteCommentController,
+    savePostController,
+    unsavePostController,
+    getSavedPostsController
 }

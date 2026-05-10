@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useContext } from 'react'
 import { AuthContext } from '../../auth/auth.context'
 
-const Post = ({ user, post, loading, handleLike, handleUnLike, handleFollow, handleUnFollow, handleDelete, comments, activePost, handleToggleComments, handleAddComment,handleDeleteComment }) => {
+const Post = ({ user, post, loading, handleLike, handleUnLike, handleFollow, handleUnFollow, handleSave, handleUnSave, handleDelete, comments, activePost, handleToggleComments, handleAddComment,handleDeleteComment }) => {
 
   const { user: loggedInUser } = useContext(AuthContext)
   const isOwnPost = loggedInUser?.username === user?.username
@@ -76,20 +76,26 @@ const Post = ({ user, post, loading, handleLike, handleUnLike, handleFollow, han
         </div>
 
         <div className="right">
-          {isOwnPost ? (
-            <button onClick={() => handleDelete(post._id)}>
+          {isOwnPost && (
+            <button onClick={() => handleDelete(post._id)} style={{marginRight: '8px'}}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="3 6 5 6 21 6"></polyline>
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
               </svg>
             </button>
-          ) : (
-            <button>
-               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                 <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-               </svg>
-            </button>
           )}
+          
+          <button onClick={() => post.isSaved ? handleUnSave(post._id) : handleSave(post._id)}>
+            {post.isSaved ? (
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+              </svg>
+            )}
+          </button>
         </div>
       </div>
 

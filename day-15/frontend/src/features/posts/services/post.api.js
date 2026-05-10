@@ -61,3 +61,18 @@ export async function deletecomment(commentId) {
     const response = await api.delete("/api/posts/comments/delete/" + commentId)
     return response.data
 }
+
+export async function savePost(postId) {
+    const response = await api.post("/api/posts/save/" + postId)
+    return response.data
+}
+
+export async function unsavePost(postId) {
+    const response = await api.post("/api/posts/unsave/" + postId)
+    return response.data
+}
+
+export async function getSavedPosts() {
+    const response = await api.get("/api/posts/saved")
+    return response.data
+}

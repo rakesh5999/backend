@@ -6,6 +6,7 @@ import Feed from "./features/posts/pages/Feed"
 import CreatePost from "./features/posts/pages/CreatePost"
 import People from "./features/follow/pages/People"
 import FollowRequests from "./features/follow/pages/FollowRequests"
+import SavedPosts from "./features/posts/pages/SavedPosts"
 import Profile from "./features/auth/pages/Profile"
 import ProtectedRoute from "./features/shared/components/ProtectedRoute"
 import PublicRoute from "./features/shared/components/PublicRoute"
@@ -54,6 +55,10 @@ export const router = createBrowserRouter([
             { 
                 path: "/profile", 
                 element: <Profile />
+            },
+            {
+                path: "/saved",
+                element: <SavedPosts />
             }
         ]
     }
