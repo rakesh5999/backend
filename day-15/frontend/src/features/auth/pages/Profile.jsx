@@ -62,9 +62,6 @@ const Profile = () => {
                 }
             }
             setProfileLoading(false)
-        }
-        
-    useEffect(() => {
         if (user || urlUsername) fetchProfile()
     }, [urlUsername, user])
 
