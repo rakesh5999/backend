@@ -64,8 +64,19 @@ const Profile = () => {
             setProfileLoading(false)
         }
         
+    useEffect(() => {
         if (user || urlUsername) fetchProfile()
     }, [urlUsername, user])
+
+    // Sync profileUser followStatus with userPosts updates
+    useEffect(() => {
+        if (posts.length > 0 && profileUser) {
+            const currentPostStatus = posts[0].followStatus
+            if (currentPostStatus && currentPostStatus !== profileUser.followStatus) {
+                setProfileUser(prev => ({ ...prev, followStatus: currentPostStatus }))
+            }
+        }
+    }, [posts, profileUser])
 
     const isOwnProfile = !urlUsername || urlUsername === user?.username
 
