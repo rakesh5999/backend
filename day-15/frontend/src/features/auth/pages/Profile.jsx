@@ -24,14 +24,17 @@ const Profile = () => {
     const [profileLoading, setProfileLoading] = useState(true)
     
     const { 
-        feed, 
+        loading, 
+        userPosts, 
+        savedPosts, 
         handleGetUserPosts, 
+        handleGetSavedPosts, 
         handleLike, 
         handleUnLike, 
-        handleSave,
-        handleUnSave,
-        handleFollow: handleFollowPost,
-        handleUnFollow: handleUnFollowPost,
+        handleFollow, 
+        handleUnFollow, 
+        handleSave, 
+        handleUnSave, 
         handleDelete, 
         comments, 
         activePost, 
@@ -96,7 +99,7 @@ const Profile = () => {
         return <main style={{display: 'flex', justifyContent: 'center', marginTop: '50px', color: 'var(--text-primary)'}}><h1>Loading...</h1></main>
     }
 
-    const userPosts = feed || []
+    const posts = userPosts || []
 
     return (
         <div className="profile-page">
@@ -148,7 +151,7 @@ const Profile = () => {
 
                     <div className="profile-stats">
                         <div className="stat">
-                            <span className="stat-count">{userPosts.length}</span> posts
+                            <span className="stat-count">{posts.length}</span> posts
                         </div>
                         <div className="stat" onClick={() => setListModal({ isOpen: true, type: 'Followers', data: profileUser?.followers || [] })} style={{cursor: 'pointer'}}>
                             <span className="stat-count">{profileUser?.followers?.length || 0}</span> followers
@@ -169,7 +172,7 @@ const Profile = () => {
             {/* Mobile Stats (only visible on mobile) */}
             <div className="profile-stats-mobile">
                 <div className="stat">
-                    <span className="stat-count">{userPosts.length}</span>
+                    <span className="stat-count">{posts.length}</span>
                     <span>posts</span>
                 </div>
                 <div className="stat" onClick={() => setListModal({ isOpen: true, type: 'Followers', data: profileUser?.followers || [] })}>
@@ -190,7 +193,7 @@ const Profile = () => {
             </div>
 
             <div className="profile-grid">
-                {userPosts.map(post => (
+                {posts.map(post => (
                     <div className="grid-item" key={post._id} onClick={() => setSelectedPost(post)}>
                         <img src={post.imgUri} alt="Post" />
                         <div className="grid-item-overlay">

@@ -4,13 +4,13 @@ import Post from '../components/Post'
 import '../style/feed.scss'
 
 const SavedPosts = () => {
-    const { loading, feed, handleGetSavedPosts, handleLike, handleUnLike, handleFollow, handleUnFollow, handleSave, handleUnSave, handleDelete, comments, activePost, handleToggleComments, handleAddComment, handleDeleteComment } = usePost()
+    const { loading, savedPosts, handleGetSavedPosts, handleLike, handleUnLike, handleFollow, handleUnFollow, handleSave, handleUnSave, handleDelete, comments, activePost, handleToggleComments, handleAddComment, handleDeleteComment } = usePost()
 
     useEffect(() => {
         handleGetSavedPosts()
     }, [])
 
-    if (loading && (!feed || feed.length === 0)) {
+    if (loading && (!savedPosts || savedPosts.length === 0)) {
         return (
             <div className="feed-loading">
                 <div className="spinner"></div>
@@ -34,9 +34,9 @@ const SavedPosts = () => {
                     <h2 style={{fontSize: '1.5rem', fontWeight: '700', color: 'var(--text-primary)'}}>Saved</h2>
                 </div>
                 
-                {feed && feed.length > 0 ? (
+                {savedPosts && savedPosts.length > 0 ? (
                     <div className="posts">
-                        {feed.map((post) => (
+                        {savedPosts.map((post) => (
                             <Post
                                 key={post._id}
                                 post={post}

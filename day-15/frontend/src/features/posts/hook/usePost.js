@@ -8,7 +8,7 @@ export const usePost = ()=>{
     const context= useContext(PostContext)
     const { handleRefreshUser } = useAuth()
 
-    const {loading,setloading,post,setpost,feed,setfeed, comments, setcomments, activePost, setactivePost} = context
+    const {loading,setloading,post,setpost,feed,setfeed, userPosts, setuserPosts, savedPosts, setsavedPosts, comments, setcomments, activePost, setactivePost} = context
 
     const handleGetFeed = async () => {
         if (!feed || feed.length === 0) setloading(true)
@@ -23,10 +23,10 @@ export const usePost = ()=>{
     }
 
     const handleGetUserPosts = async (username) => {
-        if (!feed || feed.length === 0) setloading(true)
+        if (!userPosts || userPosts.length === 0) setloading(true)
         try {
             const data = await getUserPosts(username)
-            setfeed(data.posts)
+            setuserPosts(data.posts)
         } catch (err) {
             console.error("Failed to fetch user posts", err)
         } finally {
@@ -41,103 +41,114 @@ export const usePost = ()=>{
     setloading(false)
  }
 
- const handleLike=async (postId)=>{
-    // Optimistic update
-    setfeed(prevFeed => prevFeed.map(p => 
-        p._id === postId ? { ...p, isLiked: true, likesCount: (p.likesCount || 0) + 1 } : p
-    ))
-    
-    try {
-        await likepost(postId)
-    } catch (err) {
-        console.error("Failed to like post", err)
-        await handleGetFeed() // Revert on error
+    const handleLike = async (postId) => {
+        const updater = (prev) => prev.map(p => 
+            p._id === postId ? { ...p, isLiked: true, likesCount: (p.likesCount || 0) + 1 } : p
+        )
+        setfeed(updater)
+        setuserPosts(updater)
+        setsavedPosts(updater)
+        
+        try {
+            await likepost(postId)
+        } catch (err) {
+            console.error("Failed to like post", err)
+            handleGetFeed()
+        }
     }
- }
 
- const handleUnLike=async (postId)=>{
-    // Optimistic update
-    setfeed(prevFeed => prevFeed.map(p => 
-        p._id === postId ? { ...p, isLiked: false, likesCount: Math.max(0, (p.likesCount || 0) - 1) } : p
-    ))
-    
-    try {
-        await unlikepost(postId)
-    } catch (err) {
-        console.error("Failed to unlike post", err)
-        await handleGetFeed() // Revert on error
+    const handleUnLike = async (postId) => {
+        const updater = (prev) => prev.map(p => 
+            p._id === postId ? { ...p, isLiked: false, likesCount: Math.max(0, (p.likesCount || 0) - 1) } : p
+        )
+        setfeed(updater)
+        setuserPosts(updater)
+        setsavedPosts(updater)
+        
+        try {
+            await unlikepost(postId)
+        } catch (err) {
+            console.error("Failed to unlike post", err)
+            handleGetFeed()
+        }
     }
- }
 
- const handleFollow = async (username) => {
-    // Optimistic update for all posts by this user
-    setfeed(prevFeed => prevFeed.map(p => 
-        p.user?.username === username ? { ...p, followStatus: 'pending' } : p
-    ))
-    
-    try {
-        await followUser(username)
-        await handleRefreshUser()
-    } catch (err) {
-        console.error("Failed to follow", err)
-        await handleGetFeed()
+    const handleFollow = async (username) => {
+        const updater = (prev) => prev.map(p => 
+            p.user?.username === username ? { ...p, followStatus: 'pending' } : p
+        )
+        setfeed(updater)
+        setuserPosts(updater)
+        setsavedPosts(updater)
+        
+        try {
+            await followUser(username)
+            await handleRefreshUser()
+        } catch (err) {
+            console.error("Failed to follow", err)
+            handleGetFeed()
+        }
     }
- }
 
- const handleUnFollow = async (username) => {
-    // Optimistic update
-    setfeed(prevFeed => prevFeed.map(p => 
-        p.user?.username === username ? { ...p, followStatus: 'none' } : p
-    ))
-    
-    try {
-        await unFollowUser(username)
-        await handleRefreshUser()
-    } catch (err) {
-        console.error("Failed to unfollow", err)
-        await handleGetFeed()
+    const handleUnFollow = async (username) => {
+        const updater = (prev) => prev.map(p => 
+            p.user?.username === username ? { ...p, followStatus: 'none' } : p
+        )
+        setfeed(updater)
+        setuserPosts(updater)
+        setsavedPosts(updater)
+        
+        try {
+            await unFollowUser(username)
+            await handleRefreshUser()
+        } catch (err) {
+            console.error("Failed to unfollow", err)
+            handleGetFeed()
+        }
     }
- }
 
- const handleSave = async (postId) => {
-    // Optimistic update
-    setfeed(prevFeed => prevFeed.map(p => 
-        p._id === postId ? { ...p, isSaved: true } : p
-    ))
-    
-    try {
-        await savePost(postId)
-    } catch (err) {
-        console.error("Failed to save post", err)
-        await handleGetFeed() // Revert
+    const handleSave = async (postId) => {
+        const updater = (prev) => prev.map(p => 
+            p._id === postId ? { ...p, isSaved: true } : p
+        )
+        setfeed(updater)
+        setuserPosts(updater)
+        setsavedPosts(updater)
+        
+        try {
+            await savePost(postId)
+        } catch (err) {
+            console.error("Failed to save post", err)
+            handleGetFeed()
+        }
     }
- }
 
- const handleUnSave = async (postId) => {
-    // Optimistic update
-    const isSavedPage = window.location.pathname === '/saved'
-    
-    if (isSavedPage) {
-        setfeed(prevFeed => prevFeed.filter(p => p._id !== postId))
-    } else {
-        setfeed(prevFeed => prevFeed.map(p => 
+    const handleUnSave = async (postId) => {
+        const isSavedPage = window.location.pathname === '/saved'
+        if (isSavedPage) {
+            setsavedPosts(prev => prev.filter(p => p._id !== postId))
+        }
+        
+        const updater = (prev) => prev.map(p => 
             p._id === postId ? { ...p, isSaved: false } : p
-        ))
+        )
+        setfeed(updater)
+        setuserPosts(updater)
+        if (!isSavedPage) setsavedPosts(updater)
+        
+        try {
+            await unsavePost(postId)
+        } catch (err) {
+            console.error("Failed to unsave post", err)
+            handleGetFeed()
+        }
     }
-    
-    try {
-        await unsavePost(postId)
-    } catch (err) {
-        console.error("Failed to unsave post", err)
-        await handleGetFeed() // Revert
-    }
- }
 
     const handleGetSavedPosts = async () => {
-        if (!feed || feed.length === 0) setloading(true)
+        if (!savedPosts || savedPosts.length === 0) setloading(true)
         try {
             const data = await getSavedPosts()
-            setfeed(data.posts)
+            setsavedPosts(data.posts)
         } catch (err) {
             console.error("Failed to fetch saved posts", err)
         } finally {
@@ -146,18 +157,19 @@ export const usePost = ()=>{
     }
 
 
- const handleDelete = async (postId) => {
-    // Optimistic update
-    const previousFeed = [...feed]
-    setfeed(prevFeed => prevFeed.filter(p => p._id !== postId))
-    
-    try {
-        await deletepost(postId)
-    } catch (err) {
-        console.error("Failed to delete post", err)
-        setfeed(previousFeed) // Revert on error
+    const handleDelete = async (postId) => {
+        const filter = (prev) => prev.filter(p => p._id !== postId)
+        setfeed(filter)
+        setuserPosts(filter)
+        setsavedPosts(filter)
+        
+        try {
+            await deletepost(postId)
+        } catch (err) {
+            console.error("Failed to delete post", err)
+            handleGetFeed()
+        }
     }
-}
 
 const handleToggleComments = async (postId) => {
     if (activePost === postId) {
@@ -180,6 +192,6 @@ const handleDeleteComment = async (commentId) => {
     setcomments(comments.filter(c => c._id !== commentId))
 }
 
-    return {loading,post,feed,handleGetFeed,handleCreatePost,handleLike,handleUnLike,handleFollow,handleUnFollow,handleSave,handleUnSave,handleGetSavedPosts,handleGetUserPosts,handleDelete,handleToggleComments,handleAddComment,comments, activePost,handleDeleteComment}
+    return {loading,post,feed,userPosts,savedPosts,handleGetFeed,handleCreatePost,handleLike,handleUnLike,handleFollow,handleUnFollow,handleSave,handleUnSave,handleGetSavedPosts,handleGetUserPosts,handleDelete,handleToggleComments,handleAddComment,comments, activePost,handleDeleteComment}
 
 }
