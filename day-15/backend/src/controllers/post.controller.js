@@ -1,4 +1,5 @@
 const postModel=require('../models/post.model')
+const userModel = require('../models/user.model')
 const Imagekit=require('@imagekit/nodejs')
 const {toFile}=require('@imagekit/nodejs')
 const { Folders } = require('@imagekit/nodejs/resources.js')
@@ -39,12 +40,19 @@ async function createPostController(req,res){
 
 
 async function getPostController(req,res){
-
-
-    const userId=req.user.id
+    const username = req.params.username
+    let queryUser = req.user.id
+    
+    if (username) {
+        const targetUser = await userModel.findOne({ 
+            username: { $regex: new RegExp(`^${username}$`, 'i') } 
+        })
+        if (!targetUser) return res.status(404).json({ message: "User not found" })
+        queryUser = targetUser._id
+    }
 
     const postsRaw = await postModel.find({
-        user: userId
+        user: queryUser
     }).sort({ createdAt: -1 }).populate("user").lean()
 
     const postIds = postsRaw.map(p => p._id)

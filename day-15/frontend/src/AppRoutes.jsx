@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
                 element: <FollowRequests />
             },
             { 
-                path: "/profile", 
+                path: "/profile/:username?", 
                 element: <Profile />
             },
             {

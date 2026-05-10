@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router'
 import { useFollow } from '../hook/useFollow'
 import '../style/people.scss'
 
 const People = () => {
-
+    const navigate = useNavigate()
     const { users, loading, handleGetUsers, handleFollow, handleUnFollow } = useFollow()
 
     useEffect(() => {
@@ -29,7 +30,7 @@ const People = () => {
                 <div className="users-list">
                     {users.map((user) => (
                         <div className="user-row" key={user.username}>
-                            <div className="user-info">
+                            <div className="user-info" onClick={() => navigate(`/profile/${user.username}`)} style={{cursor: 'pointer'}}>
                                 {user.profileImage ? (
                                     <img src={user.profileImage} alt={user.username} />
                                 ) : (

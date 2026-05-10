@@ -30,5 +30,6 @@ userRouter.get('/use',authMiddleware,UserController.getAllUsersController)
 userRouter.get('/follow/requests', authMiddleware, UserController.getFollowRequestsController)
 
 userRouter.patch('/update', authMiddleware, upload.single("image"), UserController.updateProfileController)
+userRouter.get('/profile/:username', authMiddleware, UserController.getUserProfileController)
 
 module.exports=userRouter

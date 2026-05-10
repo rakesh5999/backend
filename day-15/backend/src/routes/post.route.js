@@ -24,7 +24,7 @@ const identifyUser=require('../middlewares/auth.middleware')
 
 postRouter.post("/",upload.single("image"), identifyUser, postController.createPostController)
 
-postRouter.get("/", identifyUser, postController.getPostController)
+postRouter.get("/user/:username?", identifyUser, postController.getPostController)
 
 postRouter.get("/details/:postId", identifyUser, postController.getPostDetailsController)
 

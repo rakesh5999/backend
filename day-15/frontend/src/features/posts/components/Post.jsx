@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { useContext } from 'react'
+import { useNavigate } from 'react-router'
 import { AuthContext } from '../../auth/auth.context'
 
 const Post = ({ user, post, loading, handleLike, handleUnLike, handleFollow, handleUnFollow, handleSave, handleUnSave, handleDelete, comments, activePost, handleToggleComments, handleAddComment,handleDeleteComment }) => {
 
+  const navigate = useNavigate()
   const { user: loggedInUser } = useContext(AuthContext)
   const isOwnPost = loggedInUser?.username === user?.username
   const [commentText, setCommentText] = useState("") 
@@ -19,10 +21,12 @@ const Post = ({ user, post, loading, handleLike, handleUnLike, handleFollow, han
     <article className="post">
 
       <div className="user">
-        <div className="img-wrapper">
+        <div className="img-wrapper" onClick={() => navigate(`/profile/${user?.username}`)} style={{cursor: 'pointer'}}>
           <img src={user?.profileImage || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"} alt={user?.username || "user"} />
         </div>
-        <span className="username-text">{user?.username || "Unknown User"}</span>
+        <span className="username-text" onClick={() => navigate(`/profile/${user?.username}`)} style={{cursor: 'pointer'}}>
+          {user?.username || "Unknown User"}
+        </span>
 
         {!isOwnPost && (
           <>
@@ -105,7 +109,9 @@ const Post = ({ user, post, loading, handleLike, handleUnLike, handleFollow, han
 
       <div className="bottom">
         <p className='caption'>
-          <span className="caption-username">{user?.username || "Unknown User"}</span>
+          <span className="caption-username" onClick={() => navigate(`/profile/${user?.username}`)} style={{cursor: 'pointer'}}>
+            {user?.username || "Unknown User"}
+          </span>
           {post.caption}
         </p>
       </div>

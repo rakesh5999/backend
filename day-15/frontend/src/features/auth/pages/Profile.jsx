@@ -1,8 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react'
+import { useParams } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
 import { usePost } from '../../posts/hook/usePost'
+import { getUserProfile } from '../../follow/services/follow.api'
 import Post from '../../posts/components/Post'
 import '../style/profile.scss'
+import { followUser, unFollowUser } from '../../follow/services/follow.api'
 
 const Profile = () => {
     const { user, loading: authLoading, handleUpdateProfile, handleRefreshUser } = useAuth()
@@ -13,13 +16,19 @@ const Profile = () => {
     const [previewUrl, setPreviewUrl] = useState(null)
     const [localProfileImage, setLocalProfileImage] = useState(null)
     
+    const { username: urlUsername } = useParams()
+    const [profileUser, setProfileUser] = useState(null)
+    const [profileLoading, setProfileLoading] = useState(true)
+    
     const { 
         feed, 
-        handleGetFeed, 
+        handleGetUserPosts, 
         handleLike, 
         handleUnLike, 
         handleSave,
         handleUnSave,
+        handleFollow: handleFollowPost,
+        handleUnFollow: handleUnFollowPost,
         handleDelete, 
         comments, 
         activePost, 
@@ -29,9 +38,26 @@ const Profile = () => {
     } = usePost()
 
     useEffect(() => {
-        handleGetFeed()
-        handleRefreshUser()
-    }, [])
+        async function fetchProfile() {
+            setProfileLoading(true)
+            const targetUsername = urlUsername || user?.username
+            
+            if (targetUsername) {
+                try {
+                    const data = await getUserProfile(targetUsername)
+                    setProfileUser(data.user)
+                    await handleGetUserPosts(targetUsername)
+                } catch (err) {
+                    console.error("Failed to load profile", err)
+                }
+            }
+            setProfileLoading(false)
+        }
+        
+        if (user || urlUsername) fetchProfile()
+    }, [urlUsername, user])
+
+    const isOwnProfile = !urlUsername || urlUsername === user?.username
 
     const handleFileChange = (e) => {
         const file = e.target.files[0]
@@ -63,12 +89,11 @@ const Profile = () => {
         }
     }
 
-    if (authLoading) {
+    if (authLoading || profileLoading) {
         return <main style={{display: 'flex', justifyContent: 'center', marginTop: '50px', color: 'var(--text-primary)'}}><h1>Loading...</h1></main>
     }
 
-    // Filter feed for user's own posts
-    const userPosts = feed ? feed.filter(p => p.user?.username === user?.username) : []
+    const userPosts = feed || []
 
     return (
         <div className="profile-page">
@@ -79,10 +104,40 @@ const Profile = () => {
 
                 <div className="profile-info">
                     <div className="profile-top">
-                        <h2 className="username">{user?.username || "user"}</h2>
-                        <button className="edit-profile-btn" onClick={() => setIsEditModalOpen(true)}>
-                            Edit Profile
-                        </button>
+                        <h2 className="username">{profileUser?.username || "user"}</h2>
+                        {isOwnProfile ? (
+                            <button className="edit-profile-btn" onClick={() => setIsEditModalOpen(true)}>
+                                Edit Profile
+                            </button>
+                        ) : (
+                            <button 
+                                className={`follow-btn ${profileUser?.followStatus}`}
+                                onClick={async () => {
+                                    if (profileUser.followStatus === 'following' || profileUser.followStatus === 'pending') {
+                                        await unFollowUser(profileUser.username)
+                                    } else {
+                                        await followUser(profileUser.username)
+                                    }
+                                    // Refresh profile data
+                                    const data = await getUserProfile(profileUser.username)
+                                    setProfileUser(data.user)
+                                }}
+                                style={{
+                                    marginLeft: '20px',
+                                    padding: '6px 16px',
+                                    borderRadius: '8px',
+                                    border: '1px solid var(--border-light)',
+                                    background: profileUser?.followStatus === 'none' ? 'var(--accent-blue)' : 'rgba(255,255,255,0.1)',
+                                    color: profileUser?.followStatus === 'none' ? 'white' : 'var(--text-primary)',
+                                    fontWeight: '600',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                {profileUser?.followStatus === 'following' ? 'Following' 
+                                 : profileUser?.followStatus === 'pending' ? 'Requested' 
+                                 : 'Follow'}
+                            </button>
+                        )}
                     </div>
 
                     <div className="profile-stats">
@@ -90,14 +145,16 @@ const Profile = () => {
                             <span className="stat-count">{userPosts.length}</span> posts
                         </div>
                         <div className="stat">
-                            <span className="stat-count">{user?.followers?.length || 0}</span> followers
+                            <span className="stat-count">{profileUser?.followers?.length || 0}</span> followers
                         </div>
                         <div className="stat">
-                            <span className="stat-count">{user?.following?.length || 0}</span> following
+                            <span className="stat-count">{profileUser?.following?.length || 0}</span> following
                         </div>
                     </div>
 
                     <div className="profile-bio">
+                        <p>{profileUser?.bio || "No bio yet"}</p>
+                    </div>
                         <div className="bio-name">{user?.email}</div>
                     </div>
                 </div>
@@ -148,7 +205,7 @@ const Profile = () => {
                             <button onClick={() => setIsEditModalOpen(false)}>✕</button>
                         </div>
                         <div className="modal-body">
-                            <img src={previewUrl || user?.profileImage || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"} alt="Avatar Preview" className="current-avatar" />
+                            <img src={previewUrl || profileUser?.profileImage || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"} alt="Avatar Preview" className="current-avatar" />
                             
                             <form onSubmit={handleSubmit} style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                                 <label htmlFor="profileImage" className="file-label">
@@ -183,8 +240,8 @@ const Profile = () => {
                                         loading={false}
                                         handleLike={handleLike}
                                         handleUnLike={handleUnLike}
-                                        handleFollow={() => {}} 
-                                        handleUnFollow={() => {}} 
+                                        handleFollow={handleFollowPost} 
+                                        handleUnFollow={handleUnFollowPost} 
                                         handleSave={handleSave}
                                         handleUnSave={handleUnSave}
                                         handleDelete={(id) => {

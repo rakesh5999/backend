@@ -194,30 +194,69 @@ async function getFollowRequestsController(req,res){
 }
 
 async function updateProfileController(req,res){
-
     const user = req.user
-
-
     const file = await imagekit.files.upload({
             file: await toFile(Buffer.from(req.file.buffer), 'file'),
             fileName: "profile",
             folder: "insta-clone-profiles"  
           })
-
           const updatedUser = await userModel.findByIdAndUpdate(
                        user.id,
                       { profileImage: file.url },
                       { new: true }
                     )
-
-
                     res.status(200).json({
                        message: "profile image updated successfully",
                        updatedUser
                   })
+}
 
+async function getUserProfileController(req, res) {
+    try {
+        const username = req.params.username
+        const me = req.user.username
 
+        const user = await userModel.findOne({ 
+            username: { $regex: new RegExp(`^${username}$`, 'i') } 
+        }).populate('followers following').lean()
 
+        if (!user) {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        // Check follow status relative to 'me'
+        const followRecord = await followModel.findOne({
+            follower: me,
+            followee: user.username
+        })
+
+        if (!followRecord || followRecord.status === 'rejected') {
+            user.followStatus = "none"
+        } else if (followRecord.status === 'pending') {
+            user.followStatus = "pending"
+        } else if (followRecord.status === 'accepted') {
+            user.followStatus = "following"
+        } else {
+            user.followStatus = "none"
+        }
+
+        res.status(200).json({
+            message: "User profile found",
+            user: {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                bio: user.bio,
+                profileImage: user.profileImage,
+                followers: user.followers || [],
+                following: user.following || [],
+                followStatus: user.followStatus
+            }
+        })
+    } catch (error) {
+        console.error("Error in getUserProfileController:", error)
+        res.status(500).json({ message: "Internal server error" })
+    }
 }
 
 

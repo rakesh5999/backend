@@ -1,4 +1,4 @@
-import { getFeed,createPost,likepost,unlikepost,deletepost,addcomment,getcomment,deletecomment, savePost, unsavePost, getSavedPosts } from "../services/post.api";
+import { getFeed,createPost,likepost,unlikepost,deletepost,addcomment,getcomment,deletecomment, savePost, unsavePost, getSavedPosts, getUserPosts } from "../services/post.api";
 import { followUser, unFollowUser } from "../../follow/services/follow.api";
 import { useContext  } from "react";
 import { PostContext } from "../post.context";
@@ -16,6 +16,18 @@ export const usePost = ()=>{
         const data= await getFeed()
         setfeed(data.posts)
         setloading(false)
+ }
+
+ const handleGetUserPosts = async (username) => {
+    setloading(true)
+    try {
+        const data = await getUserPosts(username)
+        setfeed(data.posts)
+    } catch (err) {
+        console.error("Failed to fetch user posts", err)
+    } finally {
+        setloading(false)
+    }
  }
 
  const handleCreatePost = async (imageFile,caption)=>{
@@ -164,6 +176,6 @@ const handleDeleteComment = async (commentId) => {
     setcomments(comments.filter(c => c._id !== commentId))
 }
 
-    return {loading,post,feed,handleGetFeed,handleCreatePost,handleLike,handleUnLike,handleFollow,handleUnFollow,handleSave,handleUnSave,handleGetSavedPosts,handleDelete,handleToggleComments,handleAddComment,comments, activePost,handleDeleteComment}
+    return {loading,post,feed,handleGetFeed,handleCreatePost,handleLike,handleUnLike,handleFollow,handleUnFollow,handleSave,handleUnSave,handleGetSavedPosts,handleGetUserPosts,handleDelete,handleToggleComments,handleAddComment,comments, activePost,handleDeleteComment}
 
 }
