@@ -8,6 +8,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>Insta Clone</title>
+    <script>
+      (function() {
+        const apiUrl = window.location.origin.includes('localhost') 
+          ? 'http://localhost:3000' 
+          : 'https://insta-shadow.vercel.app';
+        fetch(apiUrl + '/ping').catch(() => {});
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

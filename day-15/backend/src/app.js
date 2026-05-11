@@ -21,4 +21,6 @@ app.use("/api/posts",postRouter)
 app.use("/api/auth",authRouter)
 app.use("/api/users",userRouter)
 
+app.get("/ping", (req, res) => res.status(200).send("pong"))
+
 module.exports=app
