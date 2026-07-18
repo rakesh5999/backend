@@ -33,8 +33,3 @@ export async function sendEmail({to, subject, html, text}) {
     console.log("Email sent:", details);
   }
 
-
-  console.log("USER:", process.env.GOOGLE_USER);
-console.log("CLIENT ID:", !!process.env.GOOGLE_CLIENT_ID);
-console.log("CLIENT SECRET:", !!process.env.GOOGLE_CLIENT_SECRET);
-console.log("REFRESH TOKEN:", !!process.env.GOOGLE_REFRESH_TOKEN);
