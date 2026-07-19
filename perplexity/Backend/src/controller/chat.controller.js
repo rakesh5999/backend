@@ -3,50 +3,78 @@ import chatModel from "../models/chat.model.js"
 import messageModel from "../models/message.model.js"
 import { AIMessage } from "langchain";
 
-export async function sendMessage(req, res) {
-  const { message, chat:chatId } = req.body
-
-
-  let title = null, chat = null
-
-  if (!chatId) {
-    title = await generateTitle(message)
-    chat = await chatModel.create({
+export async function createChat(req, res) {
+  try {
+    const chat = await chatModel.create({
       user: req.user.id,
-      title
+      title: "New Chat"
     })
+    res.status(201).json({
+      message: "Chat created successfully",
+      chat
+    })
+  } catch (err) {
+    console.error("createChat error:", err)
+    res.status(500).json({ message: "Failed to create chat", error: err.message })
   }
+}
 
+export async function sendMessage(req, res) {
+  const { message, chat: chatId, model } = req.body
 
+  try {
+    let title = null, chat = null
+    let activeChatId = chatId
 
-  const userMessage = await messageModel.create({
-    chat: chatId || chat._id,
-    content: message,
-    role: "user"
-  })
+    if (!activeChatId) {
+      title = await generateTitle(message)
+      chat = await chatModel.create({
+        user: req.user.id,
+        title
+      })
+      activeChatId = chat._id
+    } else {
+      // Touch the chat to update its updatedAt timestamp
+      const messagesCount = await messageModel.countDocuments({ chat: activeChatId })
+      if (messagesCount === 0) {
+        title = await generateTitle(message)
+        chat = await chatModel.findByIdAndUpdate(activeChatId, { title, updatedAt: new Date() }, { new: true })
+      } else {
+        chat = await chatModel.findByIdAndUpdate(activeChatId, { updatedAt: new Date() }, { new: true })
+      }
+    }
 
-  const messages = await messageModel.find({ chat: chatId || chat._id })
+    const userMessage = await messageModel.create({
+      chat: activeChatId,
+      content: message,
+      role: "user"
+    })
 
-  const result = await generateResponse(messages)
+    const messages = await messageModel.find({ chat: activeChatId })
 
-  const aiMessage = await messageModel.create({
-    chat: chatId || chat._id,
-    content: result,
-    role: "ai"
-  })
+    const result = await generateResponse(messages, model)
 
-  res.status(201).json({
-    title,
-    chat,
-    aiMessage
-  })
+    const aiMessage = await messageModel.create({
+      chat: activeChatId,
+      content: result,
+      role: "ai"
+    })
 
+    res.status(201).json({
+      title: title || (chat ? chat.title : null),
+      chat: chat,
+      aiMessage
+    })
+  } catch (err) {
+    console.error("sendMessage error:", err)
+    res.status(500).json({ message: "Failed to send message", error: err.message })
+  }
 }
 
 export async function getChats(req, res) {
   const user = req.user
 
-  const chats = await chatModel.find({ user: user.id })
+  const chats = await chatModel.find({ user: user.id }).sort({ updatedAt: -1 })
 
   res.status(200).json({
     message: "Chats retrieved succesfully",

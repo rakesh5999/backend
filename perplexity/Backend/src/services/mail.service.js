@@ -21,7 +21,7 @@ transporter.verify()
   console.error("Error verifying transporter:", err);
 });
 
-export async function sendEmail({to, subject, html, text}) {
+export async function sendEmail({to, subject, html, text=""}) {
     const mailOptions = {
       to,
       subject,
@@ -31,5 +31,6 @@ export async function sendEmail({to, subject, html, text}) {
 
     const details = await transporter.sendMail(mailOptions);
     console.log("Email sent:", details);
+    return "email sent successfully to" + to;
   }
 
