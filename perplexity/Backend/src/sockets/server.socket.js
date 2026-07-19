@@ -1,29 +1,29 @@
-import {Server} from "socket.io"
+import { Server } from "socket.io"
 
 let io;
 
-export function initSocket(httpServer){
-  io=new Server(httpServer,{
-     cors:{
-       origin:["http://localhost:5173", "http://localhost:5174"],
-       credentials:true,
-     }
-   })
+export function initSocket(httpServer) {
+  io = new Server(httpServer, {
+    cors: {
+      origin: ["http://localhost:5173", "http://localhost:5174"],
+      credentials: true,
+    }
+  })
 
   console.log("Socket.io sever is Running");
-  
 
- io.on("connection",(socket)=>{
-  console.log("A useer is connected"+socket.id);
-  
- })
+
+  io.on("connection", (socket) => {
+    console.log("A useer is connected" + socket.id);
+
+  })
 
 }
 
- export function getIO(){
-     if(!io){
-      throw new Error("Socket is not initialized")
-     }
-      return io
- }
+export function getIO() {
+  if (!io) {
+    throw new Error("Socket is not initialized")
+  }
+  return io
+}
 
